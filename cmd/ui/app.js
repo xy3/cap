@@ -320,5 +320,21 @@ $("#time").addEventListener("input", (e) => {
   schedulePreview(120);
 });
 
+async function loadFonts() {
+  try {
+    const r = await fetch("/api/fonts");
+    const j = await r.json();
+    const sel = $("#font-family");
+    const fonts = j.fonts || [];
+    const current = state.config?.font?.family;
+    if (current && !fonts.includes(current)) fonts.unshift(current);
+    sel.innerHTML = fonts
+      .map((f) => `<option value="${f.replace(/"/g, "&quot;")}">${f}</option>`)
+      .join("");
+    if (current) sel.value = current;
+  } catch (e) {}
+}
+
 restore();
 loadConfig();
+loadFonts();

@@ -1,4 +1,10 @@
 * { box-sizing: border-box; }
+* { scrollbar-color: #2a2a32 #101015; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #101015; }
+::-webkit-scrollbar-thumb { background: #2a2a32; border-radius: 5px; border: 2px solid #101015; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a42; }
+::-webkit-scrollbar-corner { background: #101015; }
 html, body { margin: 0; height: 100%; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: #0c0c0f; color: #e6e6e6; font-size: 13px; }
 
 header {
@@ -84,6 +90,8 @@ main {
 
 .color-pair { display: flex; align-items: center; gap: 8px; }
 .color-pair .hex { color: #888; font-size: 11px; min-width: 60px; text-align: right; }
+
+#font-family { min-width: 200px; }
 
 .hint { display: block; font-size: 11px; color: #666; margin-top: 4px; }
 

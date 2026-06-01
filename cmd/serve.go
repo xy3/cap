@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -54,6 +55,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 	mux.HandleFunc("/api/preview", handlePreview)
 	mux.HandleFunc("/api/generate", handleGenerate)
 	mux.HandleFunc("/api/file", handleFile)
+	mux.HandleFunc("/api/fonts", handleFonts)
 
 	addr := fmt.Sprintf(":%d", servePort)
 	fmt.Printf("Capper UI listening on http://localhost%s\n", addr)
@@ -334,6 +336,28 @@ func handleFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.ServeFile(w, r, path)
+}
+
+func handleFonts(w http.ResponseWriter, r *http.Request) {
+	out, err := exec.Command("fc-list", ":", "family").Output()
+	if err != nil {
+		writeJSON(w, 200, map[string]any{"fonts": []string{}})
+		return
+	}
+	seen := map[string]bool{}
+	for _, line := range strings.Split(string(out), "\n") {
+		name := strings.TrimSpace(strings.SplitN(line, ",", 2)[0])
+		if name == "" {
+			continue
+		}
+		seen[name] = true
+	}
+	list := make([]string, 0, len(seen))
+	for k := range seen {
+		list = append(list, k)
+	}
+	sort.Strings(list)
+	writeJSON(w, 200, map[string]any{"fonts": list})
 }
 
 func noCache(h http.Handler) http.Handler {
