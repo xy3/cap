@@ -181,15 +181,39 @@ func handleTranscribe(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, 400, "config and input required")
 		return
 	}
-	result, err := TranscribeOrCache(req.Config, req.Input, req.APIKey, req.Force, false)
-	if err != nil {
-		writeErr(w, 500, err.Error())
-		return
-	}
-	writeJSON(w, 200, map[string]any{
-		"words":    len(result.Words),
-		"duration": result.Duration,
+
+	streamNDJSON(w, func(emit func(any)) {
+		pe := &ProgressEmitter{
+			OnStage:    func(s string) { emit(map[string]any{"type": "stage", "stage": s}) },
+			OnProgress: func(s string, v float64) { emit(map[string]any{"type": "progress", "stage": s, "value": v}) },
+		}
+		result, err := transcribeOrCacheProgress(req.Config, req.Input, req.APIKey, req.Force, false, pe)
+		if err != nil {
+			emit(map[string]any{"type": "error", "error": err.Error()})
+			return
+		}
+		emit(map[string]any{"type": "done", "words": len(result.Words), "duration": result.Duration})
 	})
+}
+
+func streamNDJSON(w http.ResponseWriter, work func(emit func(any))) {
+	w.Header().Set("Content-Type", "application/x-ndjson")
+	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("X-Accel-Buffering", "no")
+	flusher, _ := w.(http.Flusher)
+
+	var mu sync.Mutex
+	emit := func(ev any) {
+		mu.Lock()
+		defer mu.Unlock()
+		data, _ := json.Marshal(ev)
+		w.Write(data)
+		w.Write([]byte("\n"))
+		if flusher != nil {
+			flusher.Flush()
+		}
+	}
+	work(emit)
 }
 
 var previewMu sync.Mutex
@@ -287,13 +311,19 @@ func handleGenerate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output, err := RunPipeline(req.Config, req.Input, req.APIKey, false, false)
-	if err != nil {
-		writeErr(w, 500, err.Error())
-		return
-	}
-	abs, _ := filepath.Abs(output)
-	writeJSON(w, 200, map[string]string{"output": abs})
+	streamNDJSON(w, func(emit func(any)) {
+		pe := &ProgressEmitter{
+			OnStage:    func(s string) { emit(map[string]any{"type": "stage", "stage": s}) },
+			OnProgress: func(s string, v float64) { emit(map[string]any{"type": "progress", "stage": s, "value": v}) },
+		}
+		output, err := RunPipelineProgress(req.Config, req.Input, req.APIKey, false, false, pe)
+		if err != nil {
+			emit(map[string]any{"type": "error", "error": err.Error()})
+			return
+		}
+		abs, _ := filepath.Abs(output)
+		emit(map[string]any{"type": "done", "output": abs})
+	})
 }
 
 func handleFile(w http.ResponseWriter, r *http.Request) {

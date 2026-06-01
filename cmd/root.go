@@ -70,7 +70,27 @@ func runCapper(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+type ProgressEmitter struct {
+	OnStage    func(stage string)
+	OnProgress func(stage string, value float64)
+}
+
+func (p *ProgressEmitter) stage(s string) {
+	if p != nil && p.OnStage != nil {
+		p.OnStage(s)
+	}
+}
+func (p *ProgressEmitter) progress(s string, v float64) {
+	if p != nil && p.OnProgress != nil {
+		p.OnProgress(s, v)
+	}
+}
+
 func RunPipeline(cfg *config.Config, input, apiKeyArg string, forceRecache, verbose bool) (string, error) {
+	return RunPipelineProgress(cfg, input, apiKeyArg, forceRecache, verbose, nil)
+}
+
+func RunPipelineProgress(cfg *config.Config, input, apiKeyArg string, forceRecache, verbose bool, emit *ProgressEmitter) (string, error) {
 	resW, resH, err := render.DetectResolution(input)
 	if err == nil && resW > 0 && resH > 0 {
 		cfg.Resolution = fmt.Sprintf("%dx%d", resW, resH)
@@ -79,7 +99,7 @@ func RunPipeline(cfg *config.Config, input, apiKeyArg string, forceRecache, verb
 		}
 	}
 
-	result, err := TranscribeOrCache(cfg, input, apiKeyArg, forceRecache, verbose)
+	result, err := transcribeOrCacheProgress(cfg, input, apiKeyArg, forceRecache, verbose, emit)
 	if err != nil {
 		return "", err
 	}
@@ -88,6 +108,7 @@ func RunPipeline(cfg *config.Config, input, apiKeyArg string, forceRecache, verb
 		return "", fmt.Errorf("no words found in transcription")
 	}
 
+	emit.stage("rendering")
 	assContent := BuildASS(result.Words, cfg)
 
 	tmpDir := filepath.Dir(cfg.OutputPath)
@@ -105,7 +126,11 @@ func RunPipeline(cfg *config.Config, input, apiKeyArg string, forceRecache, verb
 	}
 	renderStart := time.Now()
 
-	if err := render.RenderVideo(input, assPath, cfg.OutputPath); err != nil {
+	onProg := func(v float64) { emit.progress("rendering", v) }
+	if emit == nil {
+		onProg = nil
+	}
+	if err := render.RenderVideoWithProgress(input, assPath, cfg.OutputPath, onProg); err != nil {
 		return "", fmt.Errorf("rendering video: %w", err)
 	}
 
@@ -117,6 +142,10 @@ func RunPipeline(cfg *config.Config, input, apiKeyArg string, forceRecache, verb
 }
 
 func TranscribeOrCache(cfg *config.Config, input, apiKeyArg string, forceRecache, verbose bool) (*whisper.TranscriptionResult, error) {
+	return transcribeOrCacheProgress(cfg, input, apiKeyArg, forceRecache, verbose, nil)
+}
+
+func transcribeOrCacheProgress(cfg *config.Config, input, apiKeyArg string, forceRecache, verbose bool, emit *ProgressEmitter) (*whisper.TranscriptionResult, error) {
 	if !forceRecache {
 		if cached, err := whisper.LoadCache(input); err == nil {
 			if verbose {
@@ -125,6 +154,8 @@ func TranscribeOrCache(cfg *config.Config, input, apiKeyArg string, forceRecache
 			return cached, nil
 		}
 	}
+
+	emit.stage("transcribing")
 
 	var transcriber whisper.Transcriber
 	switch cfg.Whisper.Mode {

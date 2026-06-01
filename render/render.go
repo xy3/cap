@@ -1,9 +1,12 @@
 package render
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"capper/animation"
@@ -230,16 +233,78 @@ func DetectResolution(videoPath string) (int, int, error) {
 }
 
 func RenderVideo(inputVideo, assPath, outputPath string) error {
+	return RenderVideoWithProgress(inputVideo, assPath, outputPath, nil)
+}
+
+func RenderVideoWithProgress(inputVideo, assPath, outputPath string, onProgress func(float64)) error {
 	absAss, err := filepath.Abs(assPath)
 	if err != nil {
 		return fmt.Errorf("resolving ASS path: %w", err)
 	}
 
-	return ffmpeg.Input(inputVideo).
-		Output(outputPath, ffmpeg.KwArgs{
-			"vf":  fmt.Sprintf("ass=%s", absAss),
-			"c:a": "copy",
-		}).
-		OverWriteOutput().
-		Run()
+	var totalSec float64
+	if out, perr := exec.Command("ffprobe",
+		"-v", "error",
+		"-show_entries", "format=duration",
+		"-of", "default=nokey=1:noprint_wrappers=1",
+		inputVideo,
+	).Output(); perr == nil {
+		totalSec, _ = strconv.ParseFloat(strings.TrimSpace(string(out)), 64)
+	}
+
+	ffmpegArgs := []string{
+		"-y",
+		"-i", inputVideo,
+		"-vf", "ass=" + absAss,
+		"-c:a", "copy",
+		"-progress", "pipe:1",
+		"-nostats",
+		"-loglevel", "error",
+		outputPath,
+	}
+	var cmd *exec.Cmd
+	if stdbuf, lookErr := exec.LookPath("stdbuf"); lookErr == nil {
+		cmd = exec.Command(stdbuf, append([]string{"-oL", "ffmpeg"}, ffmpegArgs...)...)
+	} else {
+		cmd = exec.Command("ffmpeg", ffmpegArgs...)
+	}
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return fmt.Errorf("ffmpeg stdout pipe: %w", err)
+	}
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("starting ffmpeg: %w", err)
+	}
+
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		if onProgress == nil {
+			continue
+		}
+		line := scanner.Text()
+		if strings.HasPrefix(line, "out_time_us=") {
+			usStr := strings.TrimPrefix(line, "out_time_us=")
+			us, err := strconv.ParseInt(usStr, 10, 64)
+			if err == nil && totalSec > 0 {
+				p := float64(us) / 1e6 / totalSec
+				if p < 0 {
+					p = 0
+				}
+				if p > 1 {
+					p = 1
+				}
+				onProgress(p)
+			}
+		}
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return fmt.Errorf("ffmpeg: %w", err)
+	}
+	if onProgress != nil {
+		onProgress(1.0)
+	}
+	return nil
 }

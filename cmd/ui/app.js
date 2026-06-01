@@ -126,10 +126,8 @@ async function loadInput() {
     $("#time").disabled = false;
 
     if (!state.hasCache) {
-      status("transcribing audio… this only happens once (may take a minute)", "busy");
-      $("#spinner").hidden = false;
+      status("transcribing audio… this only happens once", "busy");
       const ok = await transcribe();
-      $("#spinner").hidden = true;
       if (!ok) return;
     }
 
@@ -152,17 +150,80 @@ function formatTime(t) {
   return `${m}:${s.toFixed(2).padStart(5, "0")}`;
 }
 
-async function transcribe(force = false) {
-  const r = await fetch("/api/transcribe", {
+async function streamNDJSON(url, body, onEvent) {
+  const r = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ config: state.config, input: state.input, force }),
+    body: JSON.stringify(body),
   });
-  const j = await r.json();
-  if (j.error) { status("transcribe failed: " + j.error, "err"); return false; }
-  state.hasCache = true;
-  status(`transcribed ${j.words} words (${j.duration.toFixed(1)}s)`, "ok");
-  return true;
+  if (!r.ok) {
+    let err = `HTTP ${r.status}`;
+    try { const j = await r.json(); if (j.error) err = j.error; } catch (e) {}
+    throw new Error(err);
+  }
+  const reader = r.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    let idx;
+    while ((idx = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, idx).trim();
+      buf = buf.slice(idx + 1);
+      if (line) {
+        try { onEvent(JSON.parse(line)); } catch (e) {}
+      }
+    }
+  }
+  if (buf.trim()) {
+    try { onEvent(JSON.parse(buf.trim())); } catch (e) {}
+  }
+}
+
+function showProgress(stage) {
+  $("#progress").hidden = false;
+  setStage(stage, 0);
+}
+function hideProgress() {
+  $("#progress").hidden = true;
+  $("#progress").classList.remove("indeterminate");
+}
+function setStage(stage, value) {
+  $("#progress-stage").textContent = stage;
+  if (stage === "transcribing") {
+    $("#progress").classList.add("indeterminate");
+    $("#progress-pct").textContent = "";
+  } else {
+    $("#progress").classList.remove("indeterminate");
+    const pct = Math.round((value || 0) * 100);
+    $("#progress-fill").style.width = pct + "%";
+    $("#progress-pct").textContent = pct + "%";
+  }
+}
+
+async function transcribe(force = false) {
+  let ok = false;
+  showProgress("transcribing");
+  try {
+    await streamNDJSON("/api/transcribe", { config: state.config, input: state.input, force }, (e) => {
+      if (e.type === "stage") setStage(e.stage, 0);
+      else if (e.type === "progress") setStage(e.stage, e.value);
+      else if (e.type === "done") {
+        state.hasCache = true;
+        status(`transcribed ${e.words} words (${e.duration.toFixed(1)}s)`, "ok");
+        ok = true;
+      } else if (e.type === "error") {
+        status("transcribe failed: " + e.error, "err");
+      }
+    });
+  } catch (err) {
+    status("transcribe failed: " + err.message, "err");
+  } finally {
+    hideProgress();
+  }
+  return ok;
 }
 
 async function updatePreview() {
@@ -214,19 +275,28 @@ async function generate() {
   persist();
 
   $("#generate-btn").disabled = true;
-  status("rendering full video — this may take a minute…", "busy");
+  status("starting…", "busy");
+  showProgress("starting");
   const t0 = performance.now();
   try {
-    const r = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ config: state.config, input: state.input }),
+    await streamNDJSON("/api/generate", { config: state.config, input: state.input }, (e) => {
+      if (e.type === "stage") {
+        setStage(e.stage, 0);
+        status(e.stage + "…", "busy");
+      } else if (e.type === "progress") {
+        setStage(e.stage, e.value);
+      } else if (e.type === "done") {
+        const dt = ((performance.now() - t0) / 1000).toFixed(1);
+        status(`✓ rendered in ${dt}s → ${e.output}`, "ok");
+        state.hasCache = true;
+      } else if (e.type === "error") {
+        status("generate failed: " + e.error, "err");
+      }
     });
-    const j = await r.json();
-    if (j.error) { status("generate failed: " + j.error, "err"); return; }
-    const dt = ((performance.now() - t0) / 1000).toFixed(1);
-    status(`✓ rendered in ${dt}s → ${j.output}`, "ok");
+  } catch (err) {
+    status("generate failed: " + err.message, "err");
   } finally {
+    hideProgress();
     $("#generate-btn").disabled = false;
   }
 }

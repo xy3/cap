@@ -166,3 +166,32 @@ input[type=range]::-moz-range-thumb {
 #status.ok { color: #5dd47a; }
 #status.err { color: #ff6b6b; }
 #status.busy { color: #1e90ff; }
+
+#progress {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 4px;
+}
+#progress[hidden] { display: none; }
+#progress .bar-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: #aaa;
+  font-variant-numeric: tabular-nums;
+}
+#progress .bar {
+  height: 6px; background: #1c1c22; border-radius: 3px; overflow: hidden;
+}
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1e90ff, #5dd47a);
+  width: 0%;
+  transition: width 0.2s ease;
+}
+#progress.indeterminate #progress-fill {
+  width: 35% !important;
+  background: linear-gradient(90deg, transparent, #1e90ff, transparent);
+  animation: slide 1.4s infinite linear;
+}
+@keyframes slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
