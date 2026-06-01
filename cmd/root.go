@@ -61,127 +61,143 @@ func runCapper(cmd *cobra.Command, args []string) error {
 		cfg.OutputPath = outputPath
 	}
 
-	resW, resH, err := render.DetectResolution(inputPath)
+	output, err := RunPipeline(cfg, inputPath, apiKey, force, true)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Output: %s\n", output)
+	return nil
+}
+
+func RunPipeline(cfg *config.Config, input, apiKeyArg string, forceRecache, verbose bool) (string, error) {
+	resW, resH, err := render.DetectResolution(input)
 	if err == nil && resW > 0 && resH > 0 {
 		cfg.Resolution = fmt.Sprintf("%dx%d", resW, resH)
-		fmt.Printf("Detected video resolution: %dx%d\n", resW, resH)
-	}
-
-	var result *whisper.TranscriptionResult
-
-	cachePath := whisper.CachePath(inputPath)
-
-	if !force {
-		if cached, err := whisper.LoadCache(inputPath); err == nil {
-			fmt.Printf("Using cached transcription (%s)\n", cachePath)
-			result = cached
+		if verbose {
+			fmt.Printf("Detected video resolution: %dx%d\n", resW, resH)
 		}
 	}
 
-	if result == nil {
-		var transcriber whisper.Transcriber
-
-		switch cfg.Whisper.Mode {
-		case config.WhisperModeLocal:
-			fmt.Printf("Using local whisper (%s) with model %s\n",
-				cfg.Whisper.BinaryPath, cfg.Whisper.ModelPath)
-			transcriber = whisper.NewLocalClient(
-				cfg.Whisper.BinaryPath,
-				cfg.Whisper.ModelPath,
-				cfg.Whisper.Language,
-			)
-
-		default:
-			if apiKey == "" {
-				apiKey = os.Getenv("OPENAI_API_KEY")
-			}
-			if apiKey == "" {
-				return fmt.Errorf("OpenAI API key required: set OPENAI_API_KEY env var or use --api-key")
-			}
-			transcriber = whisper.NewOpenAIClient(apiKey)
-		}
-
-		fmt.Println("Extracting audio and transcribing with Whisper...")
-		startTime := time.Now()
-
-		ctx := context.Background()
-
-		result, err = transcriber.Transcribe(ctx, inputPath, whisper.Params{
-			Model:       cfg.Whisper.Model,
-			Language:    cfg.Whisper.Language,
-			Prompt:      cfg.Whisper.Prompt,
-			Temperature: cfg.Whisper.Temperature,
-			BinaryPath:  cfg.Whisper.BinaryPath,
-			ModelPath:   cfg.Whisper.ModelPath,
-		})
-		if err != nil {
-			return fmt.Errorf("transcription failed: %w", err)
-		}
-
-		fmt.Printf("Transcription complete (%d words, %.1fs audio) in %s\n",
-			len(result.Words), result.Duration, time.Since(startTime).Round(time.Millisecond))
-
-		if err := whisper.SaveCache(inputPath, result); err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to write cache: %v\n", err)
-		}
+	result, err := TranscribeOrCache(cfg, input, apiKeyArg, forceRecache, verbose)
+	if err != nil {
+		return "", err
 	}
 
 	if len(result.Words) == 0 {
-		return fmt.Errorf("no words found in transcription")
+		return "", fmt.Errorf("no words found in transcription")
 	}
 
-	builder := render.NewASSBuilder(cfg)
+	assContent := BuildASS(result.Words, cfg)
 
-	var frames []caption.Frame
+	tmpDir := filepath.Dir(cfg.OutputPath)
+	if tmpDir == "" {
+		tmpDir = "."
+	}
+	assPath := filepath.Join(tmpDir, "capper_subtitles.ass")
+	if err := render.WriteASSFile(assContent, assPath); err != nil {
+		return "", fmt.Errorf("writing ASS file: %w", err)
+	}
+	defer os.Remove(assPath)
+
+	if verbose {
+		fmt.Println("Rendering final video with FFmpeg...")
+	}
+	renderStart := time.Now()
+
+	if err := render.RenderVideo(input, assPath, cfg.OutputPath); err != nil {
+		return "", fmt.Errorf("rendering video: %w", err)
+	}
+
+	if verbose {
+		fmt.Printf("Video rendered in %s\n", time.Since(renderStart).Round(time.Millisecond))
+	}
+
+	return cfg.OutputPath, nil
+}
+
+func TranscribeOrCache(cfg *config.Config, input, apiKeyArg string, forceRecache, verbose bool) (*whisper.TranscriptionResult, error) {
+	if !forceRecache {
+		if cached, err := whisper.LoadCache(input); err == nil {
+			if verbose {
+				fmt.Printf("Using cached transcription (%s)\n", whisper.CachePath(input))
+			}
+			return cached, nil
+		}
+	}
+
+	var transcriber whisper.Transcriber
+	switch cfg.Whisper.Mode {
+	case config.WhisperModeLocal:
+		if verbose {
+			fmt.Printf("Using local whisper (%s) with model %s\n", cfg.Whisper.BinaryPath, cfg.Whisper.ModelPath)
+		}
+		transcriber = whisper.NewLocalClient(cfg.Whisper.BinaryPath, cfg.Whisper.ModelPath, cfg.Whisper.Language)
+	default:
+		key := apiKeyArg
+		if key == "" {
+			key = os.Getenv("OPENAI_API_KEY")
+		}
+		if key == "" {
+			return nil, fmt.Errorf("OpenAI API key required: set OPENAI_API_KEY env var or pass --api-key")
+		}
+		transcriber = whisper.NewOpenAIClient(key)
+	}
+
+	if verbose {
+		fmt.Println("Extracting audio and transcribing with Whisper...")
+	}
+	startTime := time.Now()
+
+	result, err := transcriber.Transcribe(context.Background(), input, whisper.Params{
+		Model:       cfg.Whisper.Model,
+		Language:    cfg.Whisper.Language,
+		Prompt:      cfg.Whisper.Prompt,
+		Temperature: cfg.Whisper.Temperature,
+		BinaryPath:  cfg.Whisper.BinaryPath,
+		ModelPath:   cfg.Whisper.ModelPath,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("transcription failed: %w", err)
+	}
+
+	if verbose {
+		fmt.Printf("Transcription complete (%d words, %.1fs audio) in %s\n",
+			len(result.Words), result.Duration, time.Since(startTime).Round(time.Millisecond))
+	}
+
+	if err := whisper.SaveCache(input, result); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to write cache: %v\n", err)
+	}
+
+	return result, nil
+}
+
+func BuildASS(words []whisper.Word, cfg *config.Config) string {
+	builder := render.NewASSBuilder(cfg)
 
 	switch cfg.DisplayMode {
 	case config.DisplayKaraoke:
 		if cfg.Karaoke.Highlight == config.HighlightUnderline || cfg.Karaoke.Highlight == config.HighlightBoth {
-			frames = caption.GroupWords(result.Words, cfg)
+			frames := caption.GroupWords(words, cfg)
 			builder.AddStyle("Default")
-			fmt.Printf("Generated %d frames (%d words per frame) with word highlight\n", len(frames), cfg.WordsPerFrame)
 			for _, f := range frames {
 				builder.AddPosWordEvents(f)
 			}
 		} else {
-			frames = caption.GroupWordsKaraoke(result.Words)
+			frames := caption.GroupWordsKaraoke(words)
 			builder.AddKaraokeStyle()
-			fmt.Printf("Generated %d karaoke frames (%d words per group)\n", len(frames), cfg.WordsPerFrame)
 			for _, f := range frames {
 				builder.AddKaraokeEvent(f)
 			}
 		}
 	default:
-		frames = caption.GroupWords(result.Words, cfg)
+		frames := caption.GroupWords(words, cfg)
 		builder.AddStyle("Default")
-		fmt.Printf("Generated %d frames (%d words per frame)\n", len(frames), cfg.WordsPerFrame)
 		for _, f := range frames {
 			builder.AddStaticEvent(f)
 		}
 	}
 
-	assContent := builder.Build()
-
-	tmpDir := filepath.Dir(cfg.OutputPath)
-	assPath := filepath.Join(tmpDir, "capper_subtitles.ass")
-	if err := render.WriteASSFile(assContent, assPath); err != nil {
-		return fmt.Errorf("writing ASS file: %w", err)
-	}
-	defer func() {
-		if cleanupErr := os.Remove(assPath); cleanupErr != nil {
-			_ = cleanupErr
-		}
-	}()
-
-	fmt.Println("Rendering final video with FFmpeg...")
-	renderStart := time.Now()
-
-	if err := render.RenderVideo(inputPath, assPath, cfg.OutputPath); err != nil {
-		return fmt.Errorf("rendering video: %w", err)
-	}
-
-	fmt.Printf("Video rendered in %s\n", time.Since(renderStart).Round(time.Millisecond))
-	fmt.Printf("Output: %s\n", cfg.OutputPath)
-
-	return nil
+	return builder.Build()
 }

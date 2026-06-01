@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Capper</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">capper</div>
+  <div class="io">
+    <label class="field">
+      <span>Video</span>
+      <input id="input-path" type="text" placeholder="video.mp4" spellcheck="false">
+    </label>
+    <label class="field">
+      <span>Output</span>
+      <input id="output-path" type="text" placeholder="output.mp4" spellcheck="false">
+    </label>
+    <button id="load-btn">Load</button>
+    <button id="save-btn" title="Write current settings back to my_config.json">Save</button>
+    <button id="generate-btn" class="primary">Generate ▶</button>
+  </div>
+</header>
+
+<main>
+  <aside id="form">
+    <section>
+      <h2>Layout</h2>
+      <div class="row">
+        <label>Words per line
+          <span class="range">
+            <input type="range" data-cfg="words_per_frame" min="1" max="10" step="1">
+            <output></output>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Pause split (ms)
+          <input type="number" data-cfg="max_gap_ms" min="0" step="50">
+        </label>
+        <span class="hint">Force new line after a pause longer than this</span>
+      </div>
+      <div class="row">
+        <label>Mode
+          <select data-cfg="display_mode">
+            <option value="karaoke">karaoke (per-word highlight)</option>
+            <option value="static">static (whole line)</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Font</h2>
+      <div class="row">
+        <label>Family
+          <input type="text" data-cfg="font.family" spellcheck="false">
+        </label>
+      </div>
+      <div class="row">
+        <label>Size
+          <span class="range">
+            <input type="range" data-cfg="font.size" min="20" max="220" step="2">
+            <output></output>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Color
+          <span class="color-pair">
+            <input type="color" data-cfg="font.color">
+            <code class="hex"></code>
+          </span>
+        </label>
+      </div>
+      <div class="row inline">
+        <label class="check"><input type="checkbox" data-cfg="font.bold"> Bold</label>
+        <label class="check"><input type="checkbox" data-cfg="font.italic"> Italic</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Border</h2>
+      <div class="row">
+        <label>Color
+          <span class="color-pair">
+            <input type="color" data-cfg="stroke.color">
+            <code class="hex"></code>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Width
+          <span class="range">
+            <input type="range" data-cfg="stroke.width" min="0" max="20" step="0.5">
+            <output></output>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Blur
+          <span class="range">
+            <input type="range" data-cfg="stroke.blur" min="0" max="20" step="0.5">
+            <output></output>
+          </span>
+        </label>
+        <span class="hint">Soften the border into a halo</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Glow</h2>
+      <div class="row">
+        <label>Color
+          <span class="color-pair">
+            <input type="color" data-cfg="glow.color">
+            <code class="hex"></code>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Width
+          <span class="range">
+            <input type="range" data-cfg="glow.width" min="0" max="30" step="0.5">
+            <output></output>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Blur
+          <span class="range">
+            <input type="range" data-cfg="glow.blur" min="0" max="30" step="0.5">
+            <output></output>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Active word</h2>
+      <div class="row">
+        <label>Highlight
+          <select data-cfg="karaoke.highlight">
+            <option value="underline">underline</option>
+            <option value="color">color shift</option>
+            <option value="both">underline + color</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Pop scale
+          <span class="range">
+            <input type="range" data-cfg="karaoke.highlight_scale" min="1" max="1.6" step="0.05">
+            <output></output>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Active color
+          <span class="color-pair">
+            <input type="color" data-cfg="karaoke.active_color">
+            <code class="hex"></code>
+          </span>
+        </label>
+      </div>
+      <div class="row">
+        <label>Inactive color
+          <span class="color-pair">
+            <input type="color" data-cfg="karaoke.inactive_color">
+            <code class="hex"></code>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Entrance animation</h2>
+      <div class="row">
+        <label>Type
+          <select data-cfg="animation.type">
+            <option value="none">none</option>
+            <option value="fade-in">fade in</option>
+            <option value="pop-in">pop in</option>
+            <option value="slide-in">slide in</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Duration (ms)
+          <input type="number" data-cfg="animation.duration_ms" min="0" step="50">
+        </label>
+      </div>
+      <div class="row anim-slide">
+        <label>Slide from
+          <select data-cfg="animation.slide_direction">
+            <option value="left">left</option>
+            <option value="right">right</option>
+            <option value="top">top</option>
+            <option value="bottom">bottom</option>
+          </select>
+        </label>
+        <label>Distance
+          <input type="number" data-cfg="animation.slide_distance" min="0" step="10">
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Position</h2>
+      <div class="row">
+        <label>Anchor
+          <select data-cfg="position.alignment">
+            <option value="7">top-left</option>
+            <option value="8">top-center</option>
+            <option value="9">top-right</option>
+            <option value="4">middle-left</option>
+            <option value="5">middle-center</option>
+            <option value="6">middle-right</option>
+            <option value="1">bottom-left</option>
+            <option value="2">bottom-center</option>
+            <option value="3">bottom-right</option>
+          </select>
+        </label>
+      </div>
+      <div class="row grid-2">
+        <label>Margin left <input type="number" data-cfg="position.margin_left" step="10"></label>
+        <label>Margin right <input type="number" data-cfg="position.margin_right" step="10"></label>
+        <label>Margin top <input type="number" data-cfg="position.margin_top" step="10"></label>
+        <label>Margin bottom <input type="number" data-cfg="position.margin_bottom" step="10"></label>
+      </div>
+    </section>
+
+    <details>
+      <summary>Transcription (advanced)</summary>
+      <section class="nested">
+        <div class="row">
+          <label>Backend
+            <select data-cfg="whisper.mode">
+              <option value="local">local</option>
+              <option value="api">OpenAI API</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <label>Model
+            <input type="text" data-cfg="whisper.model_path" spellcheck="false">
+          </label>
+        </div>
+        <div class="row">
+          <label>Binary
+            <input type="text" data-cfg="whisper.binary_path" spellcheck="false">
+          </label>
+        </div>
+        <div class="row">
+          <label>Language
+            <input type="text" data-cfg="whisper.language" spellcheck="false" maxlength="6">
+          </label>
+        </div>
+        <div class="row">
+          <button id="retranscribe-btn">Re-transcribe (force)</button>
+        </div>
+      </section>
+    </details>
+  </aside>
+
+  <section id="preview-pane">
+    <div id="preview-wrap">
+      <img id="preview" alt="">
+      <div id="placeholder">Load a video to preview captions</div>
+      <div id="spinner" hidden><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+    <div id="scrub">
+      <input id="time" type="range" min="0" max="100" step="0.05" value="0" disabled>
+      <span id="time-label">—</span>
+    </div>
+    <div id="status">load a video to begin</div>
+  </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
