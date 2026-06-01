@@ -61,11 +61,18 @@ type FontConfig struct {
 type StrokeConfig struct {
 	Color string  `yaml:"color" json:"color"`
 	Width float64 `yaml:"width" json:"width"`
+	Blur  float64 `yaml:"blur" json:"blur"`
 }
 
 type ShadowConfig struct {
 	Color string  `yaml:"color" json:"color"`
 	Depth float64 `yaml:"depth" json:"depth"`
+}
+
+type GlowConfig struct {
+	Color string  `yaml:"color" json:"color"`
+	Width float64 `yaml:"width" json:"width"`
+	Blur  float64 `yaml:"blur" json:"blur"`
 }
 
 type AnimationConfig struct {
@@ -124,6 +131,7 @@ type Config struct {
 	Font          FontConfig       `yaml:"font" json:"font"`
 	Stroke        StrokeConfig     `yaml:"stroke" json:"stroke"`
 	Shadow        ShadowConfig     `yaml:"shadow" json:"shadow"`
+	Glow          GlowConfig       `yaml:"glow" json:"glow"`
 	Animation     AnimationConfig  `yaml:"animation" json:"animation"`
 	Position      PositionConfig   `yaml:"position" json:"position"`
 	Whisper       WhisperConfig    `yaml:"whisper" json:"whisper"`

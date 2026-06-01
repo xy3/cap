@@ -87,17 +87,32 @@ func WholeLineHighlightEvents(frame caption.Frame, cfg *config.Config) []WordEve
 	}
 	scalePct := int(scale * 100)
 
+	blurPrefix := ""
+	if cfg.Stroke.Blur > 0 {
+		blurPrefix = fmt.Sprintf(`{\blur%.1f}`, cfg.Stroke.Blur)
+	}
+
+	peakPct := scalePct + 8
+	bounceUp := 90
+	bounceDown := 180
+
 	buildLine := func(activeIdx int) string {
 		var parts []string
 		for i, w := range frame.Words {
 			t := strings.TrimSpace(w.Text)
 			if i == activeIdx {
-				parts = append(parts, fmt.Sprintf(`{\u1\fscx%d\fscy%d}%s{\u0\fscx100\fscy100}`, scalePct, scalePct, t))
+				active := fmt.Sprintf(
+					`{\u1\fscx100\fscy100\t(0,%d,\fscx%d\fscy%d)\t(%d,%d,\fscx%d\fscy%d)}%s{\u0\fscx100\fscy100}`,
+					bounceUp, peakPct, peakPct,
+					bounceUp, bounceDown, scalePct, scalePct,
+					t,
+				)
+				parts = append(parts, active)
 			} else {
 				parts = append(parts, t)
 			}
 		}
-		return strings.Join(parts, " ")
+		return blurPrefix + strings.Join(parts, " ")
 	}
 
 	var events []WordEvent

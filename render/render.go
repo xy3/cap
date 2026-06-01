@@ -148,10 +148,21 @@ func (b *ASSBuilder) AddWordHighlightEvent(frame caption.Frame, wordIndex int, w
 }
 
 func (b *ASSBuilder) AddPosWordEvents(frame caption.Frame) {
+	glowOverride := ""
+	if b.cfg.Glow.Width > 0 {
+		glowColor := config.HexToASSBGR(b.cfg.Glow.Color)
+		glowOverride = fmt.Sprintf(`{\1a&HFF&\3a&H00&\3c%s\bord%.1f\blur%.1f\shad0}`,
+			glowColor, b.cfg.Glow.Width, b.cfg.Glow.Blur)
+	}
+
 	for _, e := range animation.WholeLineHighlightEvents(frame, b.cfg) {
 		start := secondsToASS(e.Start)
 		end := secondsToASS(e.End)
-		ev := fmt.Sprintf("Dialogue: 0,%s,%s,Default,,0,0,0,,%s", start, end, e.Text)
+		if glowOverride != "" {
+			glowEv := fmt.Sprintf("Dialogue: 0,%s,%s,Default,,0,0,0,,%s%s", start, end, glowOverride, e.Text)
+			b.events = append(b.events, glowEv)
+		}
+		ev := fmt.Sprintf("Dialogue: 1,%s,%s,Default,,0,0,0,,%s", start, end, e.Text)
 		b.events = append(b.events, ev)
 	}
 }

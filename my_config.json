@@ -1,24 +1,30 @@
 {
-  "words_per_frame": 5,
+  "words_per_frame": 3,
   "max_gap_ms": 300,
   "display_mode": "karaoke",
   "output_path": "output_local.mp4",
   "resolution": "1920x1080",
   "font": {
-    "family": "DejaVu Sans Bold",
-    "size": 80,
+    "family": "Permanent Marker",
+    "size": 110,
     "color": "#FFFFFF",
-    "bold": true,
+    "bold": false,
     "italic": false,
     "underline": false
   },
   "stroke": {
     "color": "#000000",
-    "width": 4.0
+    "width": 5.0,
+    "blur": 0
   },
   "shadow": {
+    "color": "#000000",
+    "depth": 0
+  },
+  "glow": {
     "color": "#1E90FF",
-    "depth": 10.0
+    "width": 10.0,
+    "blur": 8.0
   },
   "animation": {
     "type": "pop-in",
