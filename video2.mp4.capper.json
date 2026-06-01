@@ -1,0 +1,331 @@
+{
+  "words": [
+    {
+      "word": " It's",
+      "start": 0,
+      "end": 0.24
+    },
+    {
+      "word": " more",
+      "start": 0.24,
+      "end": 0.6
+    },
+    {
+      "word": " American",
+      "start": 0.6,
+      "end": 1.42
+    },
+    {
+      "word": " flavor.",
+      "start": 1.42,
+      "end": 2.14
+    },
+    {
+      "word": " You",
+      "start": 2.62,
+      "end": 2.68
+    },
+    {
+      "word": " get",
+      "start": 2.68,
+      "end": 2.88
+    },
+    {
+      "word": " a",
+      "start": 2.88,
+      "end": 3.14
+    },
+    {
+      "word": " country",
+      "start": 3.14,
+      "end": 3.62
+    },
+    {
+      "word": "-ish",
+      "start": 3.62,
+      "end": 3.96
+    },
+    {
+      "word": " western",
+      "start": 3.96,
+      "end": 4.56
+    },
+    {
+      "word": " soundtrack",
+      "start": 4.56,
+      "end": 5.4
+    },
+    {
+      "word": " while",
+      "start": 5.4,
+      "end": 6
+    },
+    {
+      "word": " as",
+      "start": 6,
+      "end": 6.3
+    },
+    {
+      "word": " it",
+      "start": 6.3,
+      "end": 6.42
+    },
+    {
+      "word": " depicts",
+      "start": 6.42,
+      "end": 6.7
+    },
+    {
+      "word": " a",
+      "start": 6.7,
+      "end": 7.04
+    },
+    {
+      "word": " Japanese",
+      "start": 7.04,
+      "end": 7.5
+    },
+    {
+      "word": " character",
+      "start": 7.5,
+      "end": 8.08
+    },
+    {
+      "word": " in",
+      "start": 8.08,
+      "end": 8.64
+    },
+    {
+      "word": " a",
+      "start": 8.64,
+      "end": 8.9
+    },
+    {
+      "word": " Japanese",
+      "start": 8.9,
+      "end": 9.34
+    },
+    {
+      "word": " setting.",
+      "start": 9.34,
+      "end": 9.76
+    },
+    {
+      "word": " It",
+      "start": 10.22,
+      "end": 10.22
+    },
+    {
+      "word": " really",
+      "start": 10.22,
+      "end": 10.54
+    },
+    {
+      "word": " shows",
+      "start": 10.54,
+      "end": 10.94
+    },
+    {
+      "word": " the",
+      "start": 10.94,
+      "end": 11.34
+    },
+    {
+      "word": " director's",
+      "start": 11.34,
+      "end": 11.88
+    },
+    {
+      "word": " bias.",
+      "start": 11.88,
+      "end": 12.1
+    },
+    {
+      "word": " And",
+      "start": 12.62,
+      "end": 12.76
+    },
+    {
+      "word": " as",
+      "start": 12.76,
+      "end": 12.96
+    },
+    {
+      "word": " a",
+      "start": 12.96,
+      "end": 13.14
+    },
+    {
+      "word": " manga",
+      "start": 13.14,
+      "end": 13.46
+    },
+    {
+      "word": " first",
+      "start": 13.46,
+      "end": 13.84
+    },
+    {
+      "word": " viewer",
+      "start": 13.84,
+      "end": 14.12
+    },
+    {
+      "word": " myself,",
+      "start": 14.12,
+      "end": 14.74
+    },
+    {
+      "word": " it's",
+      "start": 15.34,
+      "end": 15.56
+    },
+    {
+      "word": " very",
+      "start": 15.56,
+      "end": 15.88
+    },
+    {
+      "word": " hard",
+      "start": 15.88,
+      "end": 16.3
+    },
+    {
+      "word": " to",
+      "start": 16.3,
+      "end": 16.9
+    },
+    {
+      "word": " wave",
+      "start": 16.9,
+      "end": 17.16
+    },
+    {
+      "word": " away",
+      "start": 17.16,
+      "end": 17.44
+    },
+    {
+      "word": " these",
+      "start": 17.44,
+      "end": 17.74
+    },
+    {
+      "word": " criticisms",
+      "start": 17.74,
+      "end": 18.3
+    },
+    {
+      "word": " because",
+      "start": 18.3,
+      "end": 18.94
+    },
+    {
+      "word": " the",
+      "start": 18.94,
+      "end": 19.08
+    },
+    {
+      "word": " adaptation",
+      "start": 19.08,
+      "end": 19.5
+    },
+    {
+      "word": " is",
+      "start": 19.5,
+      "end": 19.78
+    },
+    {
+      "word": " proving",
+      "start": 19.78,
+      "end": 20.32
+    },
+    {
+      "word": " that",
+      "start": 20.32,
+      "end": 20.68
+    },
+    {
+      "word": " it's",
+      "start": 20.68,
+      "end": 20.84
+    },
+    {
+      "word": " prioritizing",
+      "start": 20.84,
+      "end": 21.72
+    },
+    {
+      "word": " style",
+      "start": 21.72,
+      "end": 22.32
+    },
+    {
+      "word": " and",
+      "start": 22.32,
+      "end": 22.88
+    },
+    {
+      "word": " in",
+      "start": 22.88,
+      "end": 23
+    },
+    {
+      "word": " this",
+      "start": 23,
+      "end": 23.2
+    },
+    {
+      "word": " case",
+      "start": 23.2,
+      "end": 23.44
+    },
+    {
+      "word": " a",
+      "start": 23.44,
+      "end": 23.78
+    },
+    {
+      "word": " homage",
+      "start": 23.78,
+      "end": 24.16
+    },
+    {
+      "word": " to",
+      "start": 24.42,
+      "end": 24.78
+    },
+    {
+      "word": " the",
+      "start": 24.78,
+      "end": 24.94
+    },
+    {
+      "word": " manga's",
+      "start": 24.94,
+      "end": 25.46
+    },
+    {
+      "word": " original",
+      "start": 25.46,
+      "end": 25.76
+    },
+    {
+      "word": " weight",
+      "start": 25.76,
+      "end": 25.98
+    },
+    {
+      "word": " and",
+      "start": 25.98,
+      "end": 26.18
+    },
+    {
+      "word": " intent.",
+      "start": 26.18,
+      "end": 26.54
+    }
+  ],
+  "text": " It's more American flavor. You get a country-ish western soundtrack while as it depicts a Japanese character in a Japanese setting. It really shows the director's bias. And as a manga first viewer myself, it's very hard to wave away these criticisms because the adaptation is proving that it's prioritizing style and in this case a homage to the manga's original weight and intent.",
+  "duration": 26.54
+}

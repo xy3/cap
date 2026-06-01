@@ -1,0 +1,80 @@
+# Capper Configuration
+# Copy this file and customize to your needs.
+
+# Number of words to display on screen at once
+words_per_frame: 4
+
+# Display mode: "static" (all words at once) or "karaoke" (per-word highlight)
+display_mode: "static"
+
+# Output video path
+output_path: "output.mp4"
+
+# Override video resolution (auto-detected if not set)
+resolution: "1920x1080"
+
+# Font settings
+font:
+  family: "Arial"
+  size: 48
+  color: "#FFFFFF"
+  bold: false
+  italic: false
+  underline: false
+
+# Text stroke (outline) settings
+stroke:
+  color: "#000000"
+  width: 2.0
+
+# Text drop shadow settings
+shadow:
+  color: "#000000"
+  depth: 2.0
+
+# Animation settings
+animation:
+  # Type: "fade-in", "pop-in", "slide-in", or "none"
+  type: "fade-in"
+  # Animation duration in milliseconds
+  duration_ms: 300
+  # For slide-in: "left", "right", "top", "bottom"
+  slide_direction: "bottom"
+  # Pixels to slide from off-screen
+  slide_distance: 50
+
+# Caption positioning
+position:
+  # 1=bottom-left, 2=bottom-center, 3=bottom-right
+  # 4=middle-left, 5=middle-center, 6=middle-right
+  # 7=top-left, 8=top-center, 9=top-right
+  alignment: 2
+  margin_left: 60
+  margin_right: 60
+  margin_top: 20
+  margin_bottom: 100
+
+# OpenAI Whisper settings
+whisper:
+  # "api" for OpenAI API, "local" for local whisper installation
+  mode: "api"
+
+  # API mode: model name sent to OpenAI (e.g. "whisper-1")
+  model: "whisper-1"
+
+  # Local mode: path to whisper binary (default: "whisper")
+  # binary_path: "/usr/local/bin/whisper"
+
+  # Local mode: model name or path (e.g. "base", "small", "/path/to/ggml-base.bin")
+  # model_path: "base"
+
+  language: "en"
+  prompt: ""
+  temperature: 0.0
+
+# Karaoke mode colors (only used when display_mode is "karaoke")
+karaoke:
+  # Color of the word currently being spoken
+  active_color: "#FFFF00"
+  # Color of words already spoken
+  inactive_color: "#FFFFFF"

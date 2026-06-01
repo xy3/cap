@@ -1,0 +1,2351 @@
+{
+  "words": [
+    {
+      "word": " Daniel,",
+      "start": 1.2799999999999994,
+      "end": 1.6799999999999997
+    },
+    {
+      "word": " it's",
+      "start": 1.6799999999999997,
+      "end": 2.08
+    },
+    {
+      "word": " a",
+      "start": 2.08,
+      "end": 2.18
+    },
+    {
+      "word": " dish.",
+      "start": 2.18,
+      "end": 2.48
+    },
+    {
+      "word": " What",
+      "start": 2.74,
+      "end": 2.82
+    },
+    {
+      "word": " makes",
+      "start": 2.82,
+      "end": 3.02
+    },
+    {
+      "word": " this",
+      "start": 3.02,
+      "end": 3.28
+    },
+    {
+      "word": " so",
+      "start": 3.28,
+      "end": 3.5
+    },
+    {
+      "word": " special?",
+      "start": 3.5,
+      "end": 3.9
+    },
+    {
+      "word": " This",
+      "start": 4.14,
+      "end": 4.26
+    },
+    {
+      "word": " is",
+      "start": 4.26,
+      "end": 4.4
+    },
+    {
+      "word": " not",
+      "start": 4.4,
+      "end": 4.58
+    },
+    {
+      "word": " just",
+      "start": 4.58,
+      "end": 4.86
+    },
+    {
+      "word": " a",
+      "start": 4.86,
+      "end": 5.04
+    },
+    {
+      "word": " dish,",
+      "start": 5.04,
+      "end": 5.24
+    },
+    {
+      "word": " this",
+      "start": 5.38,
+      "end": 5.48
+    },
+    {
+      "word": " is",
+      "start": 5.48,
+      "end": 5.6
+    },
+    {
+      "word": " the",
+      "start": 5.6,
+      "end": 5.74
+    },
+    {
+      "word": " dish",
+      "start": 5.74,
+      "end": 5.94
+    },
+    {
+      "word": " that",
+      "start": 5.94,
+      "end": 6.16
+    },
+    {
+      "word": " greats.",
+      "start": 6.16,
+      "end": 6.66
+    },
+    {
+      "word": " It's",
+      "start": 6.66,
+      "end": 6.78
+    },
+    {
+      "word": " going",
+      "start": 6.78,
+      "end": 6.86
+    },
+    {
+      "word": " to",
+      "start": 6.86,
+      "end": 6.96
+    },
+    {
+      "word": " be",
+      "start": 6.96,
+      "end": 7.04
+    },
+    {
+      "word": " great",
+      "start": 7.04,
+      "end": 7.12
+    },
+    {
+      "word": " cheese,",
+      "start": 7.12,
+      "end": 7.46
+    },
+    {
+      "word": " and",
+      "start": 7.64,
+      "end": 7.66
+    },
+    {
+      "word": " a",
+      "start": 7.66,
+      "end": 7.76
+    },
+    {
+      "word": " pizza,",
+      "start": 7.76,
+      "end": 8.08
+    },
+    {
+      "word": " pasta,",
+      "start": 8.32,
+      "end": 8.7
+    },
+    {
+      "word": " salads,",
+      "start": 9.06,
+      "end": 9.36
+    },
+    {
+      "word": " pasta",
+      "start": 9.76,
+      "end": 9.96
+    },
+    {
+      "word": " that",
+      "start": 9.96,
+      "end": 10.14
+    },
+    {
+      "word": " around,",
+      "start": 10.14,
+      "end": 10.32
+    },
+    {
+      "word": " that",
+      "start": 10.5,
+      "end": 10.56
+    },
+    {
+      "word": " everybody",
+      "start": 10.56,
+      "end": 10.86
+    },
+    {
+      "word": " do",
+      "start": 10.86,
+      "end": 11.14
+    },
+    {
+      "word": " their",
+      "start": 11.14,
+      "end": 11.32
+    },
+    {
+      "word": " own.",
+      "start": 11.32,
+      "end": 11.6
+    },
+    {
+      "word": " Hard",
+      "start": 12.02,
+      "end": 12.2
+    },
+    {
+      "word": " nuts",
+      "start": 12.2,
+      "end": 12.34
+    },
+    {
+      "word": " and",
+      "start": 12.34,
+      "end": 12.6
+    },
+    {
+      "word": " spices,",
+      "start": 12.6,
+      "end": 12.9
+    },
+    {
+      "word": " that",
+      "start": 13.26,
+      "end": 13.34
+    },
+    {
+      "word": " there",
+      "start": 13.34,
+      "end": 13.56
+    },
+    {
+      "word": " is",
+      "start": 13.56,
+      "end": 13.76
+    },
+    {
+      "word": " nutmeg,",
+      "start": 13.76,
+      "end": 14.14
+    },
+    {
+      "word": " that",
+      "start": 14.52,
+      "end": 14.62
+    },
+    {
+      "word": " this",
+      "start": 14.62,
+      "end": 14.78
+    },
+    {
+      "word": " is",
+      "start": 14.78,
+      "end": 14.9
+    },
+    {
+      "word": " the",
+      "start": 14.9,
+      "end": 15.02
+    },
+    {
+      "word": " stuff",
+      "start": 15.02,
+      "end": 15.2
+    },
+    {
+      "word": " that",
+      "start": 15.2,
+      "end": 15.4
+    },
+    {
+      "word": " made",
+      "start": 15.4,
+      "end": 15.58
+    },
+    {
+      "word": " it",
+      "start": 15.58,
+      "end": 15.74
+    },
+    {
+      "word": " famous.",
+      "start": 15.74,
+      "end": 16.14
+    },
+    {
+      "word": " Garlic,",
+      "start": 16.4,
+      "end": 16.66
+    },
+    {
+      "word": " ginger",
+      "start": 16.98,
+      "end": 17.18
+    },
+    {
+      "word": " and",
+      "start": 17.18,
+      "end": 17.4
+    },
+    {
+      "word": " spice.",
+      "start": 17.4,
+      "end": 17.78
+    },
+    {
+      "word": " Wet",
+      "start": 18.58,
+      "end": 18.8
+    },
+    {
+      "word": " the",
+      "start": 18.8,
+      "end": 18.98
+    },
+    {
+      "word": " dish",
+      "start": 18.98,
+      "end": 19.28
+    },
+    {
+      "word": " before",
+      "start": 19.28,
+      "end": 19.58
+    },
+    {
+      "word": " you",
+      "start": 19.58,
+      "end": 19.76
+    },
+    {
+      "word": " do",
+      "start": 19.76,
+      "end": 19.88
+    },
+    {
+      "word": " any",
+      "start": 19.88,
+      "end": 20.12
+    },
+    {
+      "word": " vegetable.",
+      "start": 20.12,
+      "end": 20.58
+    },
+    {
+      "word": " Take",
+      "start": 21.1,
+      "end": 21.34
+    },
+    {
+      "word": " your",
+      "start": 21.34,
+      "end": 21.52
+    },
+    {
+      "word": " clove",
+      "start": 21.52,
+      "end": 21.74
+    },
+    {
+      "word": " of",
+      "start": 21.74,
+      "end": 21.86
+    },
+    {
+      "word": " garlic,",
+      "start": 21.86,
+      "end": 22.14
+    },
+    {
+      "word": " go",
+      "start": 22.28,
+      "end": 22.38
+    },
+    {
+      "word": " in",
+      "start": 22.38,
+      "end": 22.52
+    },
+    {
+      "word": " any",
+      "start": 22.52,
+      "end": 22.8
+    },
+    {
+      "word": " direction",
+      "start": 22.8,
+      "end": 23.24
+    },
+    {
+      "word": " and",
+      "start": 23.24,
+      "end": 23.42
+    },
+    {
+      "word": " once",
+      "start": 23.42,
+      "end": 23.52
+    },
+    {
+      "word": " you",
+      "start": 23.52,
+      "end": 23.72
+    },
+    {
+      "word": " pick",
+      "start": 23.72,
+      "end": 23.9
+    },
+    {
+      "word": " it",
+      "start": 23.9,
+      "end": 24.08
+    },
+    {
+      "word": " directions,",
+      "start": 24.08,
+      "end": 24.44
+    },
+    {
+      "word": " stick",
+      "start": 24.68,
+      "end": 24.84
+    },
+    {
+      "word": " to",
+      "start": 24.84,
+      "end": 25
+    },
+    {
+      "word": " the",
+      "start": 25,
+      "end": 25.1
+    },
+    {
+      "word": " same",
+      "start": 25.1,
+      "end": 25.34
+    },
+    {
+      "word": " one.",
+      "start": 25.34,
+      "end": 25.58
+    },
+    {
+      "word": " That's",
+      "start": 25.96,
+      "end": 26.16
+    },
+    {
+      "word": " going",
+      "start": 26.16,
+      "end": 26.28
+    },
+    {
+      "word": " to",
+      "start": 26.28,
+      "end": 26.36
+    },
+    {
+      "word": " keep",
+      "start": 26.36,
+      "end": 26.48
+    },
+    {
+      "word": " the",
+      "start": 26.48,
+      "end": 26.7
+    },
+    {
+      "word": " clove",
+      "start": 26.7,
+      "end": 26.86
+    },
+    {
+      "word": " in",
+      "start": 26.86,
+      "end": 27.02
+    },
+    {
+      "word": " one",
+      "start": 27.02,
+      "end": 27.22
+    },
+    {
+      "word": " piece",
+      "start": 27.22,
+      "end": 27.5
+    },
+    {
+      "word": " if",
+      "start": 27.5,
+      "end": 27.72
+    },
+    {
+      "word": " you",
+      "start": 27.72,
+      "end": 27.84
+    },
+    {
+      "word": " have",
+      "start": 27.84,
+      "end": 27.96
+    },
+    {
+      "word": " something",
+      "start": 27.96,
+      "end": 28.32
+    },
+    {
+      "word": " to",
+      "start": 28.32,
+      "end": 28.56
+    },
+    {
+      "word": " hold",
+      "start": 28.56,
+      "end": 28.68
+    },
+    {
+      "word": " on",
+      "start": 28.68,
+      "end": 28.9
+    },
+    {
+      "word": " to.",
+      "start": 28.9,
+      "end": 29.1
+    },
+    {
+      "word": " Before",
+      "start": 29.1,
+      "end": 29.72
+    },
+    {
+      "word": " you've",
+      "start": 29.72,
+      "end": 30.04
+    },
+    {
+      "word": " figured",
+      "start": 30.04,
+      "end": 30.22
+    },
+    {
+      "word": " it",
+      "start": 30.22,
+      "end": 30.34
+    },
+    {
+      "word": " out,",
+      "start": 30.34,
+      "end": 30.54
+    },
+    {
+      "word": " you've",
+      "start": 30.54,
+      "end": 30.78
+    },
+    {
+      "word": " already",
+      "start": 30.78,
+      "end": 30.94
+    },
+    {
+      "word": " done",
+      "start": 30.94,
+      "end": 31.18
+    },
+    {
+      "word": " the",
+      "start": 31.18,
+      "end": 31.34
+    },
+    {
+      "word": " job.",
+      "start": 31.34,
+      "end": 31.56
+    },
+    {
+      "word": " Now",
+      "start": 32.08,
+      "end": 32.16
+    },
+    {
+      "word": " some",
+      "start": 32.16,
+      "end": 32.38
+    },
+    {
+      "word": " people",
+      "start": 32.38,
+      "end": 32.68
+    },
+    {
+      "word": " lick",
+      "start": 32.68,
+      "end": 32.98
+    },
+    {
+      "word": " it",
+      "start": 32.98,
+      "end": 33.14
+    },
+    {
+      "word": " out,",
+      "start": 33.14,
+      "end": 33.26
+    },
+    {
+      "word": " they",
+      "start": 33.32,
+      "end": 33.42
+    },
+    {
+      "word": " like",
+      "start": 33.42,
+      "end": 33.56
+    },
+    {
+      "word": " it",
+      "start": 33.56,
+      "end": 33.74
+    },
+    {
+      "word": " so",
+      "start": 33.74,
+      "end": 33.94
+    },
+    {
+      "word": " much,",
+      "start": 33.94,
+      "end": 34.26
+    },
+    {
+      "word": " I",
+      "start": 34.26,
+      "end": 34.44
+    },
+    {
+      "word": " prefer",
+      "start": 34.44,
+      "end": 34.74
+    },
+    {
+      "word": " to",
+      "start": 34.74,
+      "end": 34.96
+    },
+    {
+      "word": " dip",
+      "start": 34.96,
+      "end": 35.1
+    },
+    {
+      "word": " it",
+      "start": 35.1,
+      "end": 35.24
+    },
+    {
+      "word": " out",
+      "start": 35.24,
+      "end": 35.4
+    },
+    {
+      "word": " with",
+      "start": 35.4,
+      "end": 35.62
+    },
+    {
+      "word": " olive",
+      "start": 35.62,
+      "end": 35.78
+    },
+    {
+      "word": " oil",
+      "start": 35.78,
+      "end": 35.98
+    },
+    {
+      "word": " and",
+      "start": 35.98,
+      "end": 36.18
+    },
+    {
+      "word": " butter,",
+      "start": 36.18,
+      "end": 36.3
+    },
+    {
+      "word": " so",
+      "start": 36.48,
+      "end": 36.54
+    },
+    {
+      "word": " I",
+      "start": 36.54,
+      "end": 36.66
+    },
+    {
+      "word": " make",
+      "start": 36.66,
+      "end": 36.72
+    },
+    {
+      "word": " you",
+      "start": 36.72,
+      "end": 36.88
+    },
+    {
+      "word": " when",
+      "start": 36.88,
+      "end": 37
+    },
+    {
+      "word": " it",
+      "start": 37,
+      "end": 37.14
+    },
+    {
+      "word": " comes",
+      "start": 37.14,
+      "end": 37.36
+    },
+    {
+      "word": " to",
+      "start": 37.36,
+      "end": 37.56
+    },
+    {
+      "word": " cook",
+      "start": 37.56,
+      "end": 37.72
+    },
+    {
+      "word": " in",
+      "start": 37.72,
+      "end": 37.98
+    },
+    {
+      "word": " that",
+      "start": 37.98,
+      "end": 38.14
+    },
+    {
+      "word": " brush,",
+      "start": 38.14,
+      "end": 38.44
+    },
+    {
+      "word": " that",
+      "start": 38.5,
+      "end": 38.62
+    },
+    {
+      "word": " is",
+      "start": 38.62,
+      "end": 38.74
+    },
+    {
+      "word": " every",
+      "start": 38.74,
+      "end": 38.94
+    },
+    {
+      "word": " last",
+      "start": 38.94,
+      "end": 39.18
+    },
+    {
+      "word": " piece",
+      "start": 39.18,
+      "end": 39.34
+    },
+    {
+      "word": " out.",
+      "start": 39.34,
+      "end": 39.66
+    },
+    {
+      "word": " You'll",
+      "start": 40.04,
+      "end": 40.2
+    },
+    {
+      "word": " never",
+      "start": 40.2,
+      "end": 40.36
+    },
+    {
+      "word": " do",
+      "start": 40.36,
+      "end": 40.52
+    },
+    {
+      "word": " that",
+      "start": 40.52,
+      "end": 40.66
+    },
+    {
+      "word": " with",
+      "start": 40.66,
+      "end": 40.82
+    },
+    {
+      "word": " a",
+      "start": 40.82,
+      "end": 40.92
+    },
+    {
+      "word": " press,",
+      "start": 40.92,
+      "end": 41.1
+    },
+    {
+      "word": " everything",
+      "start": 41.26,
+      "end": 41.56
+    },
+    {
+      "word": " gets",
+      "start": 41.56,
+      "end": 41.74
+    },
+    {
+      "word": " stuck.",
+      "start": 41.74,
+      "end": 42.1
+    },
+    {
+      "word": " Hicking",
+      "start": 42.54,
+      "end": 42.76
+    },
+    {
+      "word": " and",
+      "start": 42.76,
+      "end": 42.92
+    },
+    {
+      "word": " poking",
+      "start": 42.92,
+      "end": 43.16
+    },
+    {
+      "word": " for",
+      "start": 43.16,
+      "end": 43.46
+    },
+    {
+      "word": " days,",
+      "start": 43.46,
+      "end": 43.66
+    },
+    {
+      "word": " trying",
+      "start": 43.86,
+      "end": 43.98
+    },
+    {
+      "word": " to",
+      "start": 43.98,
+      "end": 44.1
+    },
+    {
+      "word": " get",
+      "start": 44.1,
+      "end": 44.2
+    },
+    {
+      "word": " it",
+      "start": 44.2,
+      "end": 44.32
+    },
+    {
+      "word": " clean,",
+      "start": 44.32,
+      "end": 44.6
+    },
+    {
+      "word": " that",
+      "start": 44.82,
+      "end": 44.9
+    },
+    {
+      "word": " there",
+      "start": 44.9,
+      "end": 45.16
+    },
+    {
+      "word": " is",
+      "start": 45.16,
+      "end": 45.3
+    },
+    {
+      "word": " about",
+      "start": 45.3,
+      "end": 45.52
+    },
+    {
+      "word": " as",
+      "start": 45.52,
+      "end": 45.8
+    },
+    {
+      "word": " fine",
+      "start": 45.8,
+      "end": 45.98
+    },
+    {
+      "word": " as",
+      "start": 45.98,
+      "end": 46.2
+    },
+    {
+      "word": " you'll",
+      "start": 46.2,
+      "end": 46.34
+    },
+    {
+      "word": " ever",
+      "start": 46.34,
+      "end": 46.48
+    },
+    {
+      "word": " get",
+      "start": 46.48,
+      "end": 46.66
+    },
+    {
+      "word": " it.",
+      "start": 46.66,
+      "end": 46.86
+    },
+    {
+      "word": " Garlic,",
+      "start": 47,
+      "end": 47.24
+    },
+    {
+      "word": " butter,",
+      "start": 47.46,
+      "end": 47.52
+    },
+    {
+      "word": " without",
+      "start": 47.8,
+      "end": 48.02
+    },
+    {
+      "word": " the",
+      "start": 48.02,
+      "end": 48.2
+    },
+    {
+      "word": " butter.",
+      "start": 48.2,
+      "end": 48.42
+    },
+    {
+      "word": " Ginger,",
+      "start": 48.9,
+      "end": 49.26
+    },
+    {
+      "word": " real",
+      "start": 49.68,
+      "end": 49.68
+    },
+    {
+      "word": " hard",
+      "start": 49.68,
+      "end": 49.9
+    },
+    {
+      "word": " to",
+      "start": 49.9,
+      "end": 50.14
+    },
+    {
+      "word": " chop,",
+      "start": 50.14,
+      "end": 50.3
+    },
+    {
+      "word": " slice,",
+      "start": 50.54,
+      "end": 50.7
+    },
+    {
+      "word": " dice.",
+      "start": 51,
+      "end": 51.14
+    },
+    {
+      "word": " It's",
+      "start": 51.64,
+      "end": 51.78
+    },
+    {
+      "word": " stringy,",
+      "start": 51.78,
+      "end": 52.16
+    },
+    {
+      "word": " it's",
+      "start": 52.2,
+      "end": 52.34
+    },
+    {
+      "word": " fibrous,",
+      "start": 52.34,
+      "end": 52.82
+    },
+    {
+      "word": " but",
+      "start": 52.9,
+      "end": 52.94
+    },
+    {
+      "word": " ginger",
+      "start": 52.94,
+      "end": 53.22
+    },
+    {
+      "word": " is",
+      "start": 53.22,
+      "end": 53.36
+    },
+    {
+      "word": " a",
+      "start": 53.36,
+      "end": 53.48
+    },
+    {
+      "word": " super",
+      "start": 53.48,
+      "end": 53.78
+    },
+    {
+      "word": " food.",
+      "start": 53.78,
+      "end": 54.12
+    },
+    {
+      "word": " Heartburn,",
+      "start": 54.12,
+      "end": 54.88
+    },
+    {
+      "word": " indigestion,",
+      "start": 54.98,
+      "end": 55.56
+    },
+    {
+      "word": " motion,",
+      "start": 55.82,
+      "end": 56.02
+    },
+    {
+      "word": " sickness,",
+      "start": 56.28,
+      "end": 56.46
+    },
+    {
+      "word": " nausea.",
+      "start": 56.66,
+      "end": 57.26
+    },
+    {
+      "word": " You",
+      "start": 57.38,
+      "end": 57.48
+    },
+    {
+      "word": " put",
+      "start": 57.48,
+      "end": 57.64
+    },
+    {
+      "word": " that",
+      "start": 57.64,
+      "end": 57.78
+    },
+    {
+      "word": " into",
+      "start": 57.78,
+      "end": 58.02
+    },
+    {
+      "word": " a",
+      "start": 58.02,
+      "end": 58.2
+    },
+    {
+      "word": " hot",
+      "start": 58.2,
+      "end": 58.32
+    },
+    {
+      "word": " tea,",
+      "start": 58.32,
+      "end": 58.64
+    },
+    {
+      "word": " hot",
+      "start": 58.86,
+      "end": 58.94
+    },
+    {
+      "word": " glass",
+      "start": 58.94,
+      "end": 59.14
+    },
+    {
+      "word": " of",
+      "start": 59.14,
+      "end": 59.34
+    },
+    {
+      "word": " water,",
+      "start": 59.34,
+      "end": 59.64
+    },
+    {
+      "word": " into",
+      "start": 59.94,
+      "end": 59.94
+    },
+    {
+      "word": " cure",
+      "start": 59.94,
+      "end": 60.22
+    },
+    {
+      "word": " oil.",
+      "start": 60.22,
+      "end": 60.6
+    },
+    {
+      "word": " Leave",
+      "start": 61.04,
+      "end": 61.18
+    },
+    {
+      "word": " behind",
+      "start": 61.18,
+      "end": 61.52
+    },
+    {
+      "word": " those",
+      "start": 61.52,
+      "end": 61.8
+    },
+    {
+      "word": " strings",
+      "start": 61.8,
+      "end": 62.02
+    },
+    {
+      "word": " and",
+      "start": 62.02,
+      "end": 62.28
+    },
+    {
+      "word": " fibres,",
+      "start": 62.28,
+      "end": 62.76
+    },
+    {
+      "word": " you",
+      "start": 63.08,
+      "end": 63.14
+    },
+    {
+      "word": " left",
+      "start": 63.14,
+      "end": 63.28
+    },
+    {
+      "word": " with",
+      "start": 63.28,
+      "end": 63.46
+    },
+    {
+      "word": " all",
+      "start": 63.46,
+      "end": 63.58
+    },
+    {
+      "word": " the",
+      "start": 63.58,
+      "end": 63.7
+    },
+    {
+      "word": " fresh",
+      "start": 63.7,
+      "end": 63.88
+    },
+    {
+      "word": " juice",
+      "start": 63.88,
+      "end": 64.12
+    },
+    {
+      "word": " and",
+      "start": 64.12,
+      "end": 64.44
+    },
+    {
+      "word": " pulp.",
+      "start": 64.44,
+      "end": 64.54
+    },
+    {
+      "word": " So,",
+      "start": 64.8,
+      "end": 64.84
+    },
+    {
+      "word": " ginger",
+      "start": 64.92,
+      "end": 65.1
+    },
+    {
+      "word": " dressing,",
+      "start": 65.1,
+      "end": 65.58
+    },
+    {
+      "word": " ginger",
+      "start": 65.88,
+      "end": 66.08
+    },
+    {
+      "word": " tea,",
+      "start": 66.08,
+      "end": 66.4
+    },
+    {
+      "word": " ginger",
+      "start": 66.62,
+      "end": 66.78
+    },
+    {
+      "word": " real.",
+      "start": 66.78,
+      "end": 67.06
+    },
+    {
+      "word": " You'll",
+      "start": 67.34,
+      "end": 67.52
+    },
+    {
+      "word": " never",
+      "start": 67.52,
+      "end": 67.72
+    },
+    {
+      "word": " do",
+      "start": 67.72,
+      "end": 67.84
+    },
+    {
+      "word": " it",
+      "start": 67.84,
+      "end": 67.94
+    },
+    {
+      "word": " like",
+      "start": 67.94,
+      "end": 68.06
+    },
+    {
+      "word": " that",
+      "start": 68.06,
+      "end": 68.24
+    },
+    {
+      "word": " with",
+      "start": 68.24,
+      "end": 68.46
+    },
+    {
+      "word": " a",
+      "start": 68.46,
+      "end": 68.52
+    },
+    {
+      "word": " knife.",
+      "start": 68.52,
+      "end": 68.68
+    },
+    {
+      "word": " You",
+      "start": 69.2,
+      "end": 69.3
+    },
+    {
+      "word": " want",
+      "start": 69.3,
+      "end": 69.38
+    },
+    {
+      "word": " a",
+      "start": 69.38,
+      "end": 69.5
+    },
+    {
+      "word": " ginger",
+      "start": 69.5,
+      "end": 69.78
+    },
+    {
+      "word": " shot",
+      "start": 69.78,
+      "end": 70.08
+    },
+    {
+      "word": " instead",
+      "start": 70.08,
+      "end": 70.66
+    },
+    {
+      "word": " of",
+      "start": 70.66,
+      "end": 70.76
+    },
+    {
+      "word": " spending",
+      "start": 70.76,
+      "end": 70.96
+    },
+    {
+      "word": " three",
+      "start": 70.96,
+      "end": 71.4
+    },
+    {
+      "word": " dollars",
+      "start": 71.4,
+      "end": 71.64
+    },
+    {
+      "word": " at",
+      "start": 71.64,
+      "end": 71.84
+    },
+    {
+      "word": " a",
+      "start": 71.84,
+      "end": 71.96
+    },
+    {
+      "word": " juice",
+      "start": 71.96,
+      "end": 72.16
+    },
+    {
+      "word": " store,",
+      "start": 72.16,
+      "end": 72.46
+    },
+    {
+      "word": " extract",
+      "start": 72.72,
+      "end": 73.1
+    },
+    {
+      "word": " the",
+      "start": 73.1,
+      "end": 73.3
+    },
+    {
+      "word": " juice",
+      "start": 73.3,
+      "end": 73.48
+    },
+    {
+      "word": " out,",
+      "start": 73.48,
+      "end": 73.78
+    },
+    {
+      "word": " that",
+      "start": 74.14,
+      "end": 74.26
+    },
+    {
+      "word": " right",
+      "start": 74.26,
+      "end": 74.42
+    },
+    {
+      "word": " there",
+      "start": 74.42,
+      "end": 74.64
+    },
+    {
+      "word": " is",
+      "start": 74.64,
+      "end": 74.82
+    },
+    {
+      "word": " pure",
+      "start": 74.82,
+      "end": 75.06
+    },
+    {
+      "word": " goodness.",
+      "start": 75.06,
+      "end": 75.48
+    },
+    {
+      "word": " Mix",
+      "start": 75.76,
+      "end": 75.94
+    },
+    {
+      "word": " that",
+      "start": 75.94,
+      "end": 76.14
+    },
+    {
+      "word": " garlic",
+      "start": 76.14,
+      "end": 76.5
+    },
+    {
+      "word": " and",
+      "start": 76.5,
+      "end": 76.66
+    },
+    {
+      "word": " ginger",
+      "start": 76.66,
+      "end": 76.9
+    },
+    {
+      "word": " together,",
+      "start": 76.9,
+      "end": 77.42
+    },
+    {
+      "word": " orange",
+      "start": 78,
+      "end": 78.14
+    },
+    {
+      "word": " juice,",
+      "start": 78.14,
+      "end": 78.42
+    },
+    {
+      "word": " soy",
+      "start": 78.66,
+      "end": 78.7
+    },
+    {
+      "word": " sauce",
+      "start": 78.7,
+      "end": 78.9
+    },
+    {
+      "word": " and",
+      "start": 78.9,
+      "end": 79.28
+    },
+    {
+      "word": " fresh",
+      "start": 79.28,
+      "end": 79.48
+    },
+    {
+      "word": " sugar.",
+      "start": 79.48,
+      "end": 79.9
+    },
+    {
+      "word": " There's",
+      "start": 80.3,
+      "end": 80.52
+    },
+    {
+      "word": " a",
+      "start": 80.52,
+      "end": 80.6
+    },
+    {
+      "word": " stir",
+      "start": 80.6,
+      "end": 80.84
+    },
+    {
+      "word": " fry",
+      "start": 80.84,
+      "end": 81.14
+    },
+    {
+      "word": " or",
+      "start": 81.14,
+      "end": 81.4
+    },
+    {
+      "word": " a",
+      "start": 81.4,
+      "end": 81.5
+    },
+    {
+      "word": " teriyaki",
+      "start": 81.5,
+      "end": 82.02
+    },
+    {
+      "word": " dish.",
+      "start": 82.02,
+      "end": 82.32
+    },
+    {
+      "word": " Now,",
+      "start": 82.96000000000001,
+      "end": 83.4
+    },
+    {
+      "word": " you",
+      "start": 83.66,
+      "end": 83.9
+    },
+    {
+      "word": " want",
+      "start": 83.9,
+      "end": 84
+    },
+    {
+      "word": " to",
+      "start": 84,
+      "end": 84.12
+    },
+    {
+      "word": " spice",
+      "start": 84.12,
+      "end": 84.46
+    },
+    {
+      "word": " it",
+      "start": 84.46,
+      "end": 84.66
+    },
+    {
+      "word": " up,",
+      "start": 84.66,
+      "end": 84.8
+    },
+    {
+      "word": " we've",
+      "start": 84.86,
+      "end": 85.02
+    },
+    {
+      "word": " got",
+      "start": 85.02,
+      "end": 85.1
+    },
+    {
+      "word": " that",
+      "start": 85.1,
+      "end": 85.36
+    },
+    {
+      "word": " jalapeno",
+      "start": 85.36,
+      "end": 85.94
+    },
+    {
+      "word": " there.",
+      "start": 85.94,
+      "end": 86.28
+    },
+    {
+      "word": " It",
+      "start": 86.54,
+      "end": 86.64
+    },
+    {
+      "word": " doesn't",
+      "start": 86.64,
+      "end": 86.82
+    },
+    {
+      "word": " matter",
+      "start": 86.82,
+      "end": 87.04
+    },
+    {
+      "word": " whether",
+      "start": 87.04,
+      "end": 87.24
+    },
+    {
+      "word": " you're",
+      "start": 87.24,
+      "end": 87.42
+    },
+    {
+      "word": " mild,",
+      "start": 87.42,
+      "end": 87.74
+    },
+    {
+      "word": " medium",
+      "start": 88.1,
+      "end": 88.18
+    },
+    {
+      "word": " or",
+      "start": 88.18,
+      "end": 88.46
+    },
+    {
+      "word": " hot.",
+      "start": 88.46,
+      "end": 88.72
+    },
+    {
+      "word": " You've",
+      "start": 89.32,
+      "end": 89.56
+    },
+    {
+      "word": " got",
+      "start": 89.56,
+      "end": 89.6
+    },
+    {
+      "word": " that",
+      "start": 89.6,
+      "end": 89.78
+    },
+    {
+      "word": " paste",
+      "start": 89.78,
+      "end": 90.08
+    },
+    {
+      "word": " into",
+      "start": 90.08,
+      "end": 90.38
+    },
+    {
+      "word": " a",
+      "start": 90.38,
+      "end": 90.52
+    },
+    {
+      "word": " sour",
+      "start": 90.52,
+      "end": 90.7
+    },
+    {
+      "word": " syrup.",
+      "start": 90.7,
+      "end": 91.1
+    },
+    {
+      "word": " Think",
+      "start": 91.12,
+      "end": 91.24
+    },
+    {
+      "word": " of",
+      "start": 91.24,
+      "end": 91.32
+    },
+    {
+      "word": " it",
+      "start": 91.32,
+      "end": 91.38
+    },
+    {
+      "word": " as",
+      "start": 91.38,
+      "end": 91.54
+    },
+    {
+      "word": " guacamole.",
+      "start": 91.54,
+      "end": 92.26
+    },
+    {
+      "word": " Every",
+      "start": 92.56,
+      "end": 92.84
+    },
+    {
+      "word": " single",
+      "start": 92.84,
+      "end": 93.18
+    },
+    {
+      "word": " chip",
+      "start": 93.18,
+      "end": 93.38
+    },
+    {
+      "word": " is",
+      "start": 93.38,
+      "end": 93.64
+    },
+    {
+      "word": " going",
+      "start": 93.64,
+      "end": 93.74
+    },
+    {
+      "word": " to",
+      "start": 93.74,
+      "end": 93.84
+    },
+    {
+      "word": " taste",
+      "start": 93.84,
+      "end": 94.1
+    },
+    {
+      "word": " the",
+      "start": 94.1,
+      "end": 94.26
+    },
+    {
+      "word": " same.",
+      "start": 94.26,
+      "end": 94.48
+    },
+    {
+      "word": " You're",
+      "start": 94.66,
+      "end": 94.72
+    },
+    {
+      "word": " going",
+      "start": 94.72,
+      "end": 94.78
+    },
+    {
+      "word": " to",
+      "start": 94.78,
+      "end": 94.82
+    },
+    {
+      "word": " get",
+      "start": 94.82,
+      "end": 94.92
+    },
+    {
+      "word": " a",
+      "start": 94.92,
+      "end": 95.04
+    },
+    {
+      "word": " perfect",
+      "start": 95.04,
+      "end": 95.36
+    },
+    {
+      "word": " consistency",
+      "start": 95.36,
+      "end": 96.12
+    },
+    {
+      "word": " each",
+      "start": 96.12,
+      "end": 96.58
+    },
+    {
+      "word": " and",
+      "start": 96.58,
+      "end": 96.7
+    },
+    {
+      "word": " every",
+      "start": 96.7,
+      "end": 96.94
+    },
+    {
+      "word": " time.",
+      "start": 96.94,
+      "end": 97.22
+    },
+    {
+      "word": " Each",
+      "start": 97.8,
+      "end": 98.08
+    },
+    {
+      "word": " one",
+      "start": 98.08,
+      "end": 98.32
+    },
+    {
+      "word": " of",
+      "start": 98.32,
+      "end": 98.36
+    },
+    {
+      "word": " these",
+      "start": 98.36,
+      "end": 98.6
+    },
+    {
+      "word": " dishes",
+      "start": 98.6,
+      "end": 98.88
+    },
+    {
+      "word": " are",
+      "start": 98.88,
+      "end": 99.12
+    },
+    {
+      "word": " individually",
+      "start": 99.12,
+      "end": 99.6
+    },
+    {
+      "word": " handmade.",
+      "start": 99.6,
+      "end": 100.08
+    },
+    {
+      "word": " We're",
+      "start": 101.12,
+      "end": 101.5
+    },
+    {
+      "word": " originated",
+      "start": 101.5,
+      "end": 101.88
+    },
+    {
+      "word": " over",
+      "start": 101.88,
+      "end": 102.44
+    },
+    {
+      "word": " in",
+      "start": 102.44,
+      "end": 102.6
+    },
+    {
+      "word": " Spain.",
+      "start": 102.6,
+      "end": 102.86
+    },
+    {
+      "word": " No",
+      "start": 103.52,
+      "end": 103.68
+    },
+    {
+      "word": " two",
+      "start": 103.68,
+      "end": 103.92
+    },
+    {
+      "word": " will",
+      "start": 103.92,
+      "end": 104.12
+    },
+    {
+      "word": " look",
+      "start": 104.12,
+      "end": 104.36
+    },
+    {
+      "word": " or",
+      "start": 104.36,
+      "end": 104.48
+    },
+    {
+      "word": " feel",
+      "start": 104.48,
+      "end": 104.7
+    },
+    {
+      "word": " the",
+      "start": 104.7,
+      "end": 104.9
+    },
+    {
+      "word": " same,",
+      "start": 104.9,
+      "end": 105.1
+    },
+    {
+      "word": " but",
+      "start": 105.22,
+      "end": 105.28
+    },
+    {
+      "word": " they",
+      "start": 105.28,
+      "end": 105.4
+    },
+    {
+      "word": " will",
+      "start": 105.4,
+      "end": 105.5
+    },
+    {
+      "word": " all",
+      "start": 105.5,
+      "end": 105.64
+    },
+    {
+      "word": " work",
+      "start": 105.64,
+      "end": 105.9
+    },
+    {
+      "word": " in",
+      "start": 105.9,
+      "end": 106.06
+    },
+    {
+      "word": " exactly",
+      "start": 106.06,
+      "end": 106.48
+    },
+    {
+      "word": " the",
+      "start": 106.48,
+      "end": 106.66
+    },
+    {
+      "word": " same",
+      "start": 106.66,
+      "end": 106.94
+    },
+    {
+      "word": " way.",
+      "start": 106.94,
+      "end": 107.2
+    },
+    {
+      "word": " You're",
+      "start": 107.46,
+      "end": 107.6
+    },
+    {
+      "word": " going",
+      "start": 107.6,
+      "end": 107.66
+    },
+    {
+      "word": " to",
+      "start": 107.66,
+      "end": 107.74
+    },
+    {
+      "word": " get",
+      "start": 107.74,
+      "end": 107.86
+    },
+    {
+      "word": " the",
+      "start": 107.86,
+      "end": 108
+    },
+    {
+      "word": " greater",
+      "start": 108,
+      "end": 108.2
+    },
+    {
+      "word": " from",
+      "start": 108.2,
+      "end": 108.5
+    },
+    {
+      "word": " Spain.",
+      "start": 108.5,
+      "end": 108.84
+    },
+    {
+      "word": " Brush",
+      "start": 109.18,
+      "end": 109.36
+    },
+    {
+      "word": " to",
+      "start": 109.36,
+      "end": 109.52
+    },
+    {
+      "word": " get",
+      "start": 109.52,
+      "end": 109.6
+    },
+    {
+      "word": " everything",
+      "start": 109.6,
+      "end": 109.96
+    },
+    {
+      "word": " out.",
+      "start": 109.96,
+      "end": 110.3
+    },
+    {
+      "word": " All",
+      "start": 110.3,
+      "end": 110.84
+    },
+    {
+      "word": " your",
+      "start": 110.84,
+      "end": 111
+    },
+    {
+      "word": " instructions",
+      "start": 111,
+      "end": 111.48
+    },
+    {
+      "word": " are",
+      "start": 111.48,
+      "end": 111.8
+    },
+    {
+      "word": " online,",
+      "start": 111.8,
+      "end": 112.08
+    },
+    {
+      "word": " videos,",
+      "start": 112.28,
+      "end": 112.52
+    },
+    {
+      "word": " recipes.",
+      "start": 112.72,
+      "end": 113.06
+    },
+    {
+      "word": " And",
+      "start": 113.58,
+      "end": 113.62
+    },
+    {
+      "word": " there's",
+      "start": 113.62,
+      "end": 113.8
+    },
+    {
+      "word": " a",
+      "start": 113.8,
+      "end": 113.86
+    },
+    {
+      "word": " free",
+      "start": 113.86,
+      "end": 114.1
+    },
+    {
+      "word": " gift",
+      "start": 114.1,
+      "end": 114.34
+    },
+    {
+      "word": " for",
+      "start": 114.34,
+      "end": 114.52
+    },
+    {
+      "word": " giving",
+      "start": 114.52,
+      "end": 114.62
+    },
+    {
+      "word": " that",
+      "start": 114.62,
+      "end": 114.86
+    },
+    {
+      "word": " garlic",
+      "start": 114.86,
+      "end": 115.22
+    },
+    {
+      "word": " teeter",
+      "start": 115.22,
+      "end": 115.56
+    },
+    {
+      "word": " as",
+      "start": 115.56,
+      "end": 115.8
+    },
+    {
+      "word": " well.",
+      "start": 115.8,
+      "end": 116
+    },
+    {
+      "word": " Give",
+      "start": 116.44,
+      "end": 116.56
+    },
+    {
+      "word": " it",
+      "start": 116.56,
+      "end": 116.68
+    },
+    {
+      "word": " a",
+      "start": 116.68,
+      "end": 116.76
+    },
+    {
+      "word": " roll.",
+      "start": 116.76,
+      "end": 117
+    },
+    {
+      "word": " Well,",
+      "start": 117.86,
+      "end": 118.04
+    },
+    {
+      "word": " that's",
+      "start": 118.08,
+      "end": 118.24
+    },
+    {
+      "word": " worth",
+      "start": 118.24,
+      "end": 118.44
+    },
+    {
+      "word": " it",
+      "start": 118.44,
+      "end": 118.58
+    },
+    {
+      "word": " right",
+      "start": 118.58,
+      "end": 118.76
+    },
+    {
+      "word": " there.",
+      "start": 118.76,
+      "end": 119
+    },
+    {
+      "word": " So,",
+      "start": 119.66,
+      "end": 119.9
+    },
+    {
+      "word": " you've",
+      "start": 120.2,
+      "end": 120.32
+    },
+    {
+      "word": " got",
+      "start": 120.32,
+      "end": 120.34
+    },
+    {
+      "word": " all",
+      "start": 120.34,
+      "end": 120.5
+    },
+    {
+      "word": " three",
+      "start": 120.5,
+      "end": 120.72
+    },
+    {
+      "word": " there.",
+      "start": 120.72,
+      "end": 120.98
+    },
+    {
+      "word": " That's",
+      "start": 121.12,
+      "end": 121.52
+    },
+    {
+      "word": " how",
+      "start": 121.52,
+      "end": 121.62
+    },
+    {
+      "word": " we",
+      "start": 121.62,
+      "end": 121.76
+    },
+    {
+      "word": " do",
+      "start": 121.76,
+      "end": 121.94
+    },
+    {
+      "word": " it.",
+      "start": 121.94,
+      "end": 122.06
+    },
+    {
+      "word": " And",
+      "start": 122.14,
+      "end": 122.2
+    },
+    {
+      "word": " that's",
+      "start": 122.2,
+      "end": 122.4
+    },
+    {
+      "word": " how",
+      "start": 122.4,
+      "end": 122.48
+    },
+    {
+      "word": " you",
+      "start": 122.48,
+      "end": 122.64
+    },
+    {
+      "word": " should",
+      "start": 122.64,
+      "end": 122.84
+    },
+    {
+      "word": " do",
+      "start": 122.84,
+      "end": 123.1
+    },
+    {
+      "word": " it.",
+      "start": 123.1,
+      "end": 123.4
+    },
+    {
+      "word": " We're",
+      "start": 123.9,
+      "end": 124.3
+    },
+    {
+      "word": " going",
+      "start": 124.3,
+      "end": 124.34
+    },
+    {
+      "word": " to",
+      "start": 124.34,
+      "end": 124.4
+    },
+    {
+      "word": " guys",
+      "start": 124.4,
+      "end": 124.56
+    },
+    {
+      "word": " find",
+      "start": 124.56,
+      "end": 124.76
+    },
+    {
+      "word": " it",
+      "start": 124.76,
+      "end": 124.96
+    },
+    {
+      "word": " out",
+      "start": 124.96,
+      "end": 125.1
+    },
+    {
+      "word": " there.",
+      "start": 125.1,
+      "end": 125.22
+    },
+    {
+      "word": " Winfieldswarehouse",
+      "start": 125.9,
+      "end": 126.30000000000001
+    },
+    {
+      "word": ".com.",
+      "start": 126.30000000000001,
+      "end": 126.7
+    },
+    {
+      "word": " One",
+      "start": 126.88,
+      "end": 127.04
+    },
+    {
+      "word": " more",
+      "start": 127.04,
+      "end": 127.18
+    },
+    {
+      "word": " time.",
+      "start": 127.18,
+      "end": 127.44
+    },
+    {
+      "word": " Winfieldswarehouse",
+      "start": 128.76,
+      "end": 129.16
+    },
+    {
+      "word": ".com.",
+      "start": 129.16,
+      "end": 129.56
+    },
+    {
+      "word": " Thank",
+      "start": 129.76,
+      "end": 129.94
+    },
+    {
+      "word": " you,",
+      "start": 129.94,
+      "end": 130.1
+    },
+    {
+      "word": " sir.",
+      "start": 130.28,
+      "end": 130.32
+    },
+    {
+      "word": " Thank",
+      "start": 130.52,
+      "end": 130.68
+    },
+    {
+      "word": " you.",
+      "start": 130.68,
+      "end": 130.84
+    }
+  ],
+  "text": " Daniel, it's a dish. What makes this so special? This is not just a dish, this is the dish that greats. It's going to be great cheese, and a pizza, pasta, salads, pasta that around, that everybody do their own. Hard nuts and spices, that there is nutmeg, that this is the stuff that made it famous. Garlic, ginger and spice. Wet the dish before you do any vegetable. Take your clove of garlic, go in any direction and once you pick it directions, stick to the same one. That's going to keep the clove in one piece if you have something to hold on to. Before you've figured it out, you've already done the job. Now some people lick it out, they like it so much, I prefer to dip it out with olive oil and butter, so I make you when it comes to cook in that brush, that is every last piece out. You'll never do that with a press, everything gets stuck. Hicking and poking for days, trying to get it clean, that there is about as fine as you'll ever get it. Garlic, butter, without the butter. Ginger, real hard to chop, slice, dice. It's stringy, it's fibrous, but ginger is a super food. Heartburn, indigestion, motion, sickness, nausea. You put that into a hot tea, hot glass of water, into cure oil. Leave behind those strings and fibres, you left with all the fresh juice and pulp. So, ginger dressing, ginger tea, ginger real. You'll never do it like that with a knife. You want a ginger shot instead of spending three dollars at a juice store, extract the juice out, that right there is pure goodness. Mix that garlic and ginger together, orange juice, soy sauce and fresh sugar. There's a stir fry or a teriyaki dish. Now, you want to spice it up, we've got that jalapeno there. It doesn't matter whether you're mild, medium or hot. You've got that paste into a sour syrup. Think of it as guacamole. Every single chip is going to taste the same. You're going to get a perfect consistency each and every time. Each one of these dishes are individually handmade. We're originated over in Spain. No two will look or feel the same, but they will all work in exactly the same way. You're going to get the greater from Spain. Brush to get everything out. All your instructions are online, videos, recipes. And there's a free gift for giving that garlic teeter as well. Give it a roll. Well, that's worth it right there. So, you've got all three there. That's how we do it. And that's how you should do it. We're going to guys find it out there. Winfieldswarehouse.com. One more time. Winfieldswarehouse.com. Thank you, sir. Thank you.",
+  "duration": 130.84
+}

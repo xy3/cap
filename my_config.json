@@ -1,0 +1,51 @@
+{
+  "words_per_frame": 5,
+  "max_gap_ms": 300,
+  "display_mode": "karaoke",
+  "output_path": "output_local.mp4",
+  "resolution": "1920x1080",
+  "font": {
+    "family": "DejaVu Sans Bold",
+    "size": 80,
+    "color": "#FFFFFF",
+    "bold": true,
+    "italic": false,
+    "underline": false
+  },
+  "stroke": {
+    "color": "#000000",
+    "width": 4.0
+  },
+  "shadow": {
+    "color": "#1E90FF",
+    "depth": 10.0
+  },
+  "animation": {
+    "type": "pop-in",
+    "duration_ms": 200,
+    "slide_direction": "bottom",
+    "slide_distance": 50
+  },
+  "position": {
+    "alignment": 2,
+    "margin_left": 60,
+    "margin_right": 60,
+    "margin_top": 20,
+    "margin_bottom": 80
+  },
+  "whisper": {
+    "mode": "local",
+    "model": "",
+    "language": "en",
+    "prompt": "",
+    "temperature": 0.0,
+    "binary_path": "whisper",
+    "model_path": "base"
+  },
+  "karaoke": {
+    "active_color": "#FFFFFF",
+    "inactive_color": "#FFFFFF",
+    "highlight": "underline",
+    "highlight_scale": 1.15
+  }
+}

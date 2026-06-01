@@ -1,0 +1,45 @@
+{
+  "words_per_frame": 3,
+  "display_mode": "static",
+  "output_path": "output.json.mp4",
+  "resolution": "1920x1080",
+  "font": {
+    "family": "Helvetica",
+    "size": 52,
+    "color": "#FFFFFF",
+    "bold": true,
+    "italic": false,
+    "underline": false
+  },
+  "stroke": {
+    "color": "#333333",
+    "width": 3.0
+  },
+  "shadow": {
+    "color": "#111111",
+    "depth": 3.0
+  },
+  "animation": {
+    "type": "pop-in",
+    "duration_ms": 400,
+    "slide_direction": "bottom",
+    "slide_distance": 60
+  },
+  "position": {
+    "alignment": 2,
+    "margin_left": 80,
+    "margin_right": 80,
+    "margin_top": 30,
+    "margin_bottom": 120
+  },
+  "whisper": {
+    "model": "whisper-1",
+    "language": "en",
+    "prompt": "",
+    "temperature": 0.0
+  },
+  "karaoke": {
+    "active_color": "#FFD700",
+    "inactive_color": "#FFFFFF"
+  }
+}
