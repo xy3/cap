@@ -18,7 +18,6 @@ import (
 	"capper/whisper"
 
 	"github.com/spf13/cobra"
-	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 //go:embed ui
@@ -48,7 +47,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.FS(sub)))
+	mux.Handle("/", noCache(http.FileServer(http.FS(sub))))
 	mux.HandleFunc("/api/config", handleConfig)
 	mux.HandleFunc("/api/info", handleInfo)
 	mux.HandleFunc("/api/transcribe", handleTranscribe)
@@ -159,15 +158,16 @@ func handleInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func probeDuration(input string) float64 {
-	out, err := ffmpeg.Probe(input, ffmpeg.KwArgs{
-		"v":            "error",
-		"show_entries": "format=duration",
-		"of":           "csv=p=0",
-	})
+	out, err := exec.Command("ffprobe",
+		"-v", "error",
+		"-show_entries", "format=duration",
+		"-of", "default=nokey=1:noprint_wrappers=1",
+		input,
+	).Output()
 	if err != nil {
 		return 0
 	}
-	d, _ := strconv.ParseFloat(strings.TrimSpace(out), 64)
+	d, _ := strconv.ParseFloat(strings.TrimSpace(string(out)), 64)
 	return d
 }
 
@@ -267,6 +267,7 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	args := []string{
 		"-y",
 		"-ss", fmt.Sprintf("%.3f", req.Time),
+		"-copyts",
 		"-i", req.Input,
 		"-vf", "ass=" + escapeAssPath(absAss),
 		"-frames:v", "1",
@@ -333,4 +334,13 @@ func handleFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.ServeFile(w, r, path)
+}
+
+func noCache(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
+		h.ServeHTTP(w, r)
+	})
 }
