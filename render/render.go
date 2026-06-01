@@ -173,7 +173,7 @@ func (b *ASSBuilder) Build() string {
 	sb.WriteString("[Script Info]\n")
 	sb.WriteString("Title: Capper Subtitles\n")
 	sb.WriteString("ScriptType: v4.00+\n")
-	sb.WriteString("WrapStyle: 0\n")
+	sb.WriteString("WrapStyle: 2\n")
 	sb.WriteString("ScaledBorderAndShadow: yes\n")
 	sb.WriteString(fmt.Sprintf("PlayResX: %d\n", b.cfg.ResX()))
 	sb.WriteString(fmt.Sprintf("PlayResY: %d\n", b.cfg.ResY()))
