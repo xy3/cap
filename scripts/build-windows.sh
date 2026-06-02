@@ -17,9 +17,9 @@
 # Everything transcription + render is offline once unzipped — no Python,
 # no separate ffmpeg install, no API key.
 #
-#   GPU=1 ./scripts/build-windows.sh    # NVIDIA-GPU build (falls back to CPU),
-#                                        # defaults to the medium model
+#   GPU=1 ./scripts/build-windows.sh    # NVIDIA-GPU build (falls back to CPU)
 #   MODEL=ggml-small.bin ...            # pick a different speech model
+#   MODEL=none ...                      # bundle no model (download it in-app)
 #
 # Requires: go, curl, unzip, zip, python3 (build host only). Needs network
 # access to fetch ffmpeg, whisper.cpp and the model.
@@ -49,8 +49,9 @@ if [[ "$GPU" == "1" ]]; then
     # cuBLAS and fails with a missing-DLL error on machines without CUDA.)
     # Requires a reasonably recent NVIDIA driver (CUDA 12.x minor-version compat).
     WHISPER_URL="${WHISPER_URL:-https://github.com/ggml-org/whisper.cpp/releases/download/v1.8.6/whisper-cublas-12.4.0-bin-x64.zip}"
-    # A GPU chews through bigger models easily, so default to "medium".
-    MODEL="${MODEL:-ggml-medium.bin}"
+    # Ship the small "base" model so the app works out of the box; users grab
+    # bigger models (medium/large) from the in-app model manager.
+    MODEL="${MODEL:-ggml-base.bin}"
 else
     WHISPER_URL="${WHISPER_URL:-https://github.com/ggml-org/whisper.cpp/releases/download/v1.8.6/whisper-blas-bin-x64.zip}"
     # Multilingual "base" (~148 MB). Override e.g. MODEL=ggml-small.bin.
@@ -100,8 +101,12 @@ cp "$WHISPER_EXE" "$DIST/"
 # runtime (cudart*, nvrtc*), so the same binary runs on GPU or falls back to CPU.
 cp "$WHISPER_DIR"/*.dll "$DIST/"
 
-echo ">> Fetching model: $MODEL_URL"
-dl -o "$DIST/$MODEL" "$MODEL_URL"
+if [[ "$MODEL" == "none" ]]; then
+    echo ">> Skipping model download (MODEL=none) — user downloads one in the app"
+else
+    echo ">> Fetching model: $MODEL_URL"
+    dl -o "$DIST/$MODEL" "$MODEL_URL"
+fi
 
 echo ">> Writing run.bat and bundled config"
 cp "$ROOT/scripts/run.bat" "$DIST/run.bat"
@@ -110,9 +115,13 @@ cp "$ROOT/scripts/run.bat" "$DIST/run.bat"
 # whisper.cpp binary + model. binary_path resolves via PATH (capper prepends its
 # own folder at startup); model_path is relative to the launch folder (run.bat
 # cd's into the bundle).
+# When no model is bundled, default the config to "base" so the model manager
+# shows it pre-selected and one click away.
+CFG_MODEL="$MODEL"
+[[ "$MODEL" == "none" ]] && CFG_MODEL="ggml-base.bin"
 BASE_CFG="$ROOT/my_config.json"
 [[ -f "$BASE_CFG" ]] || BASE_CFG="$ROOT/examples/config.json"
-MODEL="$MODEL" python3 - "$BASE_CFG" "$DIST/my_config.json" <<'PY'
+MODEL="$CFG_MODEL" python3 - "$BASE_CFG" "$DIST/my_config.json" <<'PY'
 import json, os, sys
 src, dst = sys.argv[1], sys.argv[2]
 cfg = json.load(open(src))

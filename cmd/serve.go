@@ -65,6 +65,8 @@ func runServe(cmd *cobra.Command, args []string) error {
 	mux.HandleFunc("/api/update", handleUpdate)
 	mux.HandleFunc("/api/pick", handlePick)
 	mux.HandleFunc("/api/reveal", handleReveal)
+	mux.HandleFunc("/api/models", handleModels)
+	mux.HandleFunc("/api/models/download", handleModelDownload)
 
 	addr := fmt.Sprintf(":%d", servePort)
 

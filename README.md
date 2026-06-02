@@ -114,9 +114,25 @@ or Python whisper instead; the bundle just defaults to offline whisper.cpp.)
 
 **GPU build:** `GPU=1 ./scripts/build-windows.sh` bundles the CUDA (cuBLAS)
 whisper.cpp build, which uses an NVIDIA GPU when present and **falls back to CPU
-automatically** if there's no usable GPU. It adds ~150 MB of CUDA runtime DLLs
-and defaults to the `medium` model (a GPU handles it easily). Requires a
-reasonably recent NVIDIA driver on the user's machine; no CUDA install needed.
+automatically** if there's no usable GPU. It bundles the full CUDA runtime
+(self-contained — no CUDA install needed). Requires a reasonably recent NVIDIA
+driver.
+
+Each release publishes **both**:
+
+| Download | For |
+|----------|-----|
+| `capper-win64.zip` | CPU — works everywhere (~290 MB) |
+| `capper-win64-cuda.zip` | NVIDIA GPU, CPU fallback (~1 GB) |
+
+So a GPU user just downloads `capper-win64-cuda.zip` and runs `run.bat` — no
+manual DLL swapping. The `capper.exe` inside is identical to the CPU one, so the
+in-app updater works for either.
+
+**Models:** both bundles ship the small `base` model so they work immediately.
+Bigger models (small / medium / large) are downloaded **from inside the app** —
+the *Speech model* panel lists every model with its size and a one-click
+download, and remembers your choice. No manual model files to manage.
 
 ### Updating Windows users
 

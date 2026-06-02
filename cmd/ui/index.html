@@ -238,6 +238,23 @@
       </div>
     </section>
 
+    <section>
+      <h2>Speech model</h2>
+      <div class="row">
+        <label>Model
+          <select id="model-select"></select>
+        </label>
+      </div>
+      <div class="row" id="model-action">
+        <button id="model-download-btn" hidden></button>
+        <span id="model-hint" class="hint"></span>
+      </div>
+      <div id="model-progress" class="mini-progress" hidden>
+        <div class="bar-label"><span>downloading…</span><span id="model-pct"></span></div>
+        <div class="bar"><div id="model-fill"></div></div>
+      </div>
+    </section>
+
     <details>
       <summary>Transcription (advanced)</summary>
       <section class="nested">
@@ -247,11 +264,6 @@
               <option value="local">local</option>
               <option value="api">OpenAI API</option>
             </select>
-          </label>
-        </div>
-        <div class="row">
-          <label>Model
-            <input type="text" data-cfg="whisper.model_path" spellcheck="false">
           </label>
         </div>
         <div class="row">

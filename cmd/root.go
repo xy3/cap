@@ -189,7 +189,7 @@ func transcribeOrCacheProgress(cfg *config.Config, input, apiKeyArg string, forc
 		if verbose {
 			fmt.Printf("Using local whisper (%s) with model %s\n", cfg.Whisper.BinaryPath, cfg.Whisper.ModelPath)
 		}
-		transcriber = whisper.NewLocalClient(cfg.Whisper.BinaryPath, cfg.Whisper.ModelPath, cfg.Whisper.Language)
+		transcriber = whisper.NewLocalClient(cfg.Whisper.BinaryPath, resolveModelPath(cfg.Whisper.ModelPath), cfg.Whisper.Language)
 	default:
 		key := apiKeyArg
 		if key == "" {

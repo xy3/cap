@@ -14,7 +14,7 @@
   },
   "stroke": {
     "color": "#000000",
-    "width": 5.0,
+    "width": 5,
     "blur": 0
   },
   "shadow": {
@@ -23,8 +23,8 @@
   },
   "glow": {
     "color": "#1E90FF",
-    "width": 10.0,
-    "blur": 8.0
+    "width": 10,
+    "blur": 8
   },
   "animation": {
     "type": "pop-in",
@@ -44,9 +44,9 @@
     "model": "",
     "language": "en",
     "prompt": "",
-    "temperature": 0.0,
+    "temperature": 0,
     "binary_path": "whisper",
-    "model_path": "base"
+    "model_path": "ggml-tiny.en.bin"
   },
   "karaoke": {
     "active_color": "#FFFFFF",

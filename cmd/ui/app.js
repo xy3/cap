@@ -13,6 +13,7 @@ const state = {
   canRestart: false,
   update: null,
   output: null,
+  models: [],
 };
 
 const STORAGE_KEY = "capper.last";
@@ -492,7 +493,116 @@ async function waitForRestart(target) {
 
 $("#update-btn").addEventListener("click", runUpdate);
 
+// --- speech model manager --------------------------------------------------
+
+function modelSizeLabel(mb) {
+  return mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB";
+}
+
+async function loadModels() {
+  try {
+    const r = await fetch("/api/models", { cache: "no-store" });
+    const j = await r.json();
+    state.models = j.models || [];
+  } catch (e) {
+    state.models = [];
+  }
+  renderModelSelect();
+}
+
+function renderModelSelect() {
+  const sel = $("#model-select");
+  const cur = state.config?.whisper?.model_path || "";
+  sel.innerHTML = state.models
+    .map((m) => `<option value="${m.file}">${m.downloaded ? "✓ " : "⬇ "}${m.name} — ${modelSizeLabel(m.size_mb)}</option>`)
+    .join("");
+  if (state.models.some((m) => m.file === cur)) {
+    sel.value = cur;
+  } else if (cur) {
+    const opt = document.createElement("option");
+    opt.value = cur;
+    opt.textContent = cur + " (custom)";
+    sel.appendChild(opt);
+    sel.value = cur;
+  }
+  updateModelAction();
+}
+
+function currentModel() {
+  return state.models.find((m) => m.file === $("#model-select").value);
+}
+
+function updateModelAction() {
+  const m = currentModel();
+  const btn = $("#model-download-btn");
+  const hint = $("#model-hint");
+  if (!m) {
+    btn.hidden = true;
+    hint.textContent = "custom model path";
+  } else if (m.downloaded) {
+    btn.hidden = true;
+    hint.textContent = "✓ downloaded — active";
+  } else {
+    btn.hidden = false;
+    btn.className = "ready";
+    btn.textContent = `⬇ Download ${m.name} (${modelSizeLabel(m.size_mb)})`;
+    hint.textContent = "not downloaded — pick a smaller model or download this one";
+  }
+}
+
+// Persist the model choice quietly (no status spam) so it survives restarts.
+async function persistModelChoice() {
+  try {
+    await fetch(`/api/config?path=${encodeURIComponent(state.configPath)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state.config),
+    });
+  } catch (e) {}
+}
+
+$("#model-select").addEventListener("change", () => {
+  if (state.config?.whisper) state.config.whisper.model_path = $("#model-select").value;
+  updateModelAction();
+  persistModelChoice();
+});
+
+async function downloadModel() {
+  const m = currentModel();
+  if (!m) return;
+  const btn = $("#model-download-btn");
+  btn.disabled = true;
+  $("#model-progress").hidden = false;
+  $("#model-fill").style.width = "0%";
+  $("#model-pct").textContent = "0%";
+  status(`downloading ${m.name} (${modelSizeLabel(m.size_mb)})…`, "busy");
+  try {
+    await streamNDJSON("/api/models/download", { file: m.file }, (e) => {
+      if (e.type === "progress") {
+        const pct = Math.round(e.value * 100);
+        $("#model-fill").style.width = pct + "%";
+        $("#model-pct").textContent = pct + "%";
+      } else if (e.type === "done") {
+        status(`✓ ${m.name} ready`, "ok");
+      } else if (e.type === "error") {
+        status("download failed: " + e.error, "err");
+      }
+    });
+    if (state.config?.whisper) state.config.whisper.model_path = m.file;
+    await persistModelChoice();
+    await loadModels();
+    $("#model-select").value = m.file;
+    updateModelAction();
+  } catch (err) {
+    status("download failed: " + err.message, "err");
+  } finally {
+    btn.disabled = false;
+    $("#model-progress").hidden = true;
+  }
+}
+$("#model-download-btn").addEventListener("click", downloadModel);
+
 restore();
-loadConfig();
+loadConfig().then(loadModels);
 loadFonts();
 checkVersion().then(checkUpdate);

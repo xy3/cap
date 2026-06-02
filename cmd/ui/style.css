@@ -114,6 +114,16 @@ main {
 .color-pair .hex { color: #888; font-size: 11px; min-width: 60px; text-align: right; }
 
 #font-family { min-width: 200px; }
+#model-select { min-width: 200px; }
+#model-download-btn { width: 100%; }
+#model-download-btn.ready { background: #2a7d3a; border-color: #2a7d3a; color: #fff; font-weight: 600; }
+#model-download-btn.ready:hover { background: #2f8c41; }
+
+.mini-progress { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.mini-progress[hidden] { display: none; }
+.mini-progress .bar-label { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; font-variant-numeric: tabular-nums; }
+.mini-progress .bar { height: 6px; background: #1c1c22; border-radius: 3px; overflow: hidden; }
+.mini-progress .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, #1e90ff, #5dd47a); transition: width 0.2s ease; }
 
 .hint { display: block; font-size: 11px; color: #666; margin-top: 4px; }
 
