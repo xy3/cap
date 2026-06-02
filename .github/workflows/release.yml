@@ -2,16 +2,17 @@ name: release
 
 # Cut a release by pushing a version tag:
 #
-#   git tag v1.3.0 && git push --tags
+#   git tag 1.3.0 && git push --tags
 #
 # GitHub then builds the Linux binary and the full Windows bundle, and publishes
 # a release with the assets the in-app self-updater expects. Nothing is built on
-# your machine.
+# your machine. Both "1.3.0" and "v1.3.0" style tags work.
 
 on:
   push:
     tags:
-      - "v*"
+      - "[0-9]*"
+      - "v[0-9]*"
 
 permissions:
   contents: write

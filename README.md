@@ -118,16 +118,19 @@ Updates ship as just the ~18 MB `capper.exe` — the bundled FFmpeg, whisper, an
 model never change, so users never re-download the full bundle. The version is
 baked into the binary and the app self-updates from GitHub Releases.
 
-**To publish an update:**
+**To publish an update — just push a tag:**
 
 ```bash
-VERSION=v1.3.0 ./scripts/build-windows.sh    # bakes the version in
-git tag v1.3.0 && git push --tags
-# Create a GitHub release for v1.3.0 and attach dist/capper.exe as an asset.
+git tag 1.3.0 && git push --tags
 ```
 
+The `release` GitHub Action (`.github/workflows/release.yml`) then builds the
+Linux binary and the full Windows bundle and publishes a GitHub Release with the
+right assets — nothing is built on your machine. (`v1.3.0`-style tags work too.)
+To build a release locally instead, run `./scripts/release.sh 1.3.0`.
+
 **What the user sees:** when they open the UI, capper checks the latest release.
-If a newer version exists, a green **"⬆ Update to v1.3.0"** button appears in the
+If a newer version exists, a green **"⬆ Update to 1.3.0"** button appears in the
 header. Clicking it downloads the new `capper.exe`, swaps it in place, and — when
 launched via `run.bat` — capper restarts itself on the same port and the page
 reloads into the new version automatically. No manual download, no reinstall.

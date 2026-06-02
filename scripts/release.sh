@@ -3,7 +3,7 @@
 # Cut a Capper release: build the Windows + Linux artifacts and publish a GitHub
 # release that the in-app self-updater (and `capper update`) pulls from.
 #
-#   ./scripts/release.sh v1.3.0
+#   ./scripts/release.sh 1.3.0
 #
 # It produces and uploads:
 #   capper.exe            <- Windows self-update asset (must keep this name)
@@ -17,11 +17,11 @@ set -euo pipefail
 
 VERSION="${1:-}"
 if [[ -z "$VERSION" ]]; then
-    echo "usage: $0 vX.Y.Z" >&2
+    echo "usage: $0 X.Y.Z   (e.g. 1.3.0)" >&2
     exit 1
 fi
-if [[ ! "$VERSION" =~ ^v[0-9] ]]; then
-    echo "!! version should look like v1.3.0" >&2
+if [[ ! "$VERSION" =~ ^v?[0-9] ]]; then
+    echo "!! version should look like 1.3.0 (or v1.3.0)" >&2
     exit 1
 fi
 
