@@ -112,6 +112,12 @@ The model is overridable at build time — e.g. `MODEL=ggml-small.bin
 smaller English-only model. (You can still switch the config to the OpenAI API
 or Python whisper instead; the bundle just defaults to offline whisper.cpp.)
 
+**GPU build:** `GPU=1 ./scripts/build-windows.sh` bundles the CUDA (cuBLAS)
+whisper.cpp build, which uses an NVIDIA GPU when present and **falls back to CPU
+automatically** if there's no usable GPU. It adds ~150 MB of CUDA runtime DLLs
+and defaults to the `medium` model (a GPU handles it easily). Requires a
+reasonably recent NVIDIA driver on the user's machine; no CUDA install needed.
+
 ### Updating Windows users
 
 Updates ship as just the ~18 MB `capper.exe` — the bundled FFmpeg, whisper, and
