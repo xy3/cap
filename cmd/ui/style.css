@@ -36,6 +36,10 @@ button.update:disabled { animation: none; }
   padding: 5px 10px; border-top-left-radius: 0; border-bottom-left-radius: 0;
   white-space: nowrap; border-color: #2e2e36;
 }
+/* When several buttons sit in the group, keep the inner edges flush. */
+.path-pick button:not(:last-child) {
+  border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none;
+}
 
 input, select, button {
   font: inherit;

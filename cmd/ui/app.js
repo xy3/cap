@@ -367,6 +367,7 @@ async function generate() {
   }
 }
 
+$("#load-btn").addEventListener("click", loadInput);
 $("#input-browse").addEventListener("click", browseInput);
 $("#output-browse").addEventListener("click", browseOutput);
 $("#reveal-btn").addEventListener("click", revealOutput);
