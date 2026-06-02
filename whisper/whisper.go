@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/sashabaranov/go-openai"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
@@ -231,9 +232,14 @@ func (c *LocalClient) runWhisperCPP(ctx context.Context, binary, model, audioPat
 }
 
 func isWhisperCPP(binary string) bool {
-	base := filepath.Base(binary)
-	// Common whisper.cpp binary names
-	return base == "whisper-cli" || base == "whisper.cpp" || base == "main" || base == "whisper-cpp"
+	base := strings.ToLower(filepath.Base(binary))
+	base = strings.TrimSuffix(base, ".exe")
+	// Common whisper.cpp binary names (with or without a Windows .exe suffix)
+	switch base {
+	case "whisper-cli", "whisper.cpp", "main", "whisper-cpp":
+		return true
+	}
+	return false
 }
 
 func findWhisperOutput(dir, ext string) string {

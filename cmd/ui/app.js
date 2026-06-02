@@ -9,6 +9,10 @@ const state = {
   hasCache: false,
   previewTime: 1,
   inflight: null,
+  version: null,
+  canRestart: false,
+  update: null,
+  output: null,
 };
 
 const STORAGE_KEY = "capper.last";
@@ -107,13 +111,26 @@ async function loadConfig() {
   bindForm();
 }
 
+// Derive a sensible default output path next to the input video.
+function deriveOutput(input) {
+  const i = Math.max(input.lastIndexOf("/"), input.lastIndexOf("\\"));
+  const dir = input.slice(0, i + 1);
+  const name = input.slice(i + 1);
+  const dot = name.lastIndexOf(".");
+  const base = dot > 0 ? name.slice(0, dot) : name;
+  return dir + base + "-captioned.mp4";
+}
+
 async function loadInput() {
   const input = $("#input-path").value.trim();
-  if (!input) { status("enter a video path first", "err"); return; }
+  if (!input) { status("choose a video first", "err"); return; }
   state.input = input;
+  if (!$("#output-path").value.trim()) {
+    $("#output-path").value = deriveOutput(input);
+  }
   persist();
 
-  $("#load-btn").disabled = true;
+  $("#input-browse").disabled = true;
   try {
     status("loading video info…", "busy");
     const r = await fetch(`/api/info?input=${encodeURIComponent(input)}`);
@@ -141,8 +158,44 @@ async function loadInput() {
     status("load failed: " + e.message, "err");
     $("#spinner").hidden = true;
   } finally {
-    $("#load-btn").disabled = false;
+    $("#input-browse").disabled = false;
   }
+}
+
+async function pickPath(mode, title, def) {
+  const r = await fetch("/api/pick", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode, title, default: def || "" }),
+  });
+  const j = await r.json().catch(() => ({ error: "dialog failed" }));
+  if (j.error) { status(j.error, "err"); return null; }
+  return j.canceled ? null : j.path;
+}
+
+async function browseInput() {
+  status("opening file picker…", "busy");
+  const path = await pickPath("open", "Select input video", state.input || $("#input-path").value);
+  if (!path) { status("ready", ""); return; }
+  $("#input-path").value = path;
+  $("#output-path").value = deriveOutput(path);
+  persist();
+  loadInput();
+}
+
+async function browseOutput() {
+  const cur = $("#output-path").value || (state.input ? deriveOutput(state.input) : "");
+  const path = await pickPath("save", "Save captioned video as", cur);
+  if (!path) return;
+  $("#output-path").value = path;
+  persist();
+}
+
+async function revealOutput() {
+  if (!state.output) return;
+  const r = await fetch(`/api/reveal?path=${encodeURIComponent(state.output)}`);
+  const j = await r.json().catch(() => ({}));
+  if (j.error) status("could not open folder: " + j.error, "err");
 }
 
 function formatTime(t) {
@@ -289,6 +342,8 @@ async function generate() {
         const dt = ((performance.now() - t0) / 1000).toFixed(1);
         status(`✓ rendered in ${dt}s → ${e.output}`, "ok");
         state.hasCache = true;
+        state.output = e.output;
+        $("#reveal-btn").hidden = false;
       } else if (e.type === "error") {
         status("generate failed: " + e.error, "err");
       }
@@ -301,7 +356,9 @@ async function generate() {
   }
 }
 
-$("#load-btn").addEventListener("click", loadInput);
+$("#input-browse").addEventListener("click", browseInput);
+$("#output-browse").addEventListener("click", browseOutput);
+$("#reveal-btn").addEventListener("click", revealOutput);
 $("#save-btn").addEventListener("click", saveConfig);
 $("#generate-btn").addEventListener("click", generate);
 $("#retranscribe-btn").addEventListener("click", async () => {
@@ -312,6 +369,7 @@ $("#retranscribe-btn").addEventListener("click", async () => {
 });
 
 $("#input-path").addEventListener("keydown", (e) => { if (e.key === "Enter") loadInput(); });
+$("#input-path").addEventListener("change", () => { if ($("#input-path").value.trim()) loadInput(); });
 
 $("#time").addEventListener("input", (e) => {
   state.previewTime = parseFloat(e.target.value);
@@ -335,6 +393,93 @@ async function loadFonts() {
   } catch (e) {}
 }
 
+// --- version / self-update -------------------------------------------------
+
+async function checkVersion() {
+  try {
+    const r = await fetch("/api/version", { cache: "no-store" });
+    const j = await r.json();
+    state.version = j.version;
+    state.canRestart = !!j.can_restart;
+    $("#version-tag").textContent = j.version ? (j.version === "dev" ? "dev" : j.version) : "";
+  } catch (e) {}
+}
+
+async function checkUpdate() {
+  try {
+    const r = await fetch("/api/update", { cache: "no-store" });
+    if (!r.ok) return;
+    const j = await r.json();
+    if (j.available) {
+      state.update = j;
+      const btn = $("#update-btn");
+      btn.hidden = false;
+      btn.textContent = `⬆ Update to ${j.latest}`;
+      btn.title = j.notes ? j.notes.slice(0, 400) : `Update from ${j.current} to ${j.latest}`;
+    }
+  } catch (e) {}
+}
+
+async function runUpdate() {
+  if (!state.update) return;
+  const target = state.update.latest;
+  const btn = $("#update-btn");
+  btn.disabled = true;
+  status(`updating to ${target}…`, "busy");
+  showProgress("downloading");
+  let restarting = false;
+  try {
+    await streamNDJSON("/api/update", {}, (e) => {
+      if (e.type === "stage") setStage(e.stage, 0);
+      else if (e.type === "progress") setStage(e.stage, e.value);
+      else if (e.type === "uptodate") {
+        status("already up to date", "ok");
+        btn.hidden = true;
+      } else if (e.type === "done") {
+        restarting = e.restarting;
+      } else if (e.type === "error") {
+        status("update failed: " + e.error, "err");
+      }
+    });
+  } catch (err) {
+    // A hard connection drop right after install can surface here even on success.
+    restarting = state.canRestart;
+  } finally {
+    hideProgress();
+  }
+
+  if (restarting) {
+    status(`restarting into ${target}…`, "busy");
+    await waitForRestart(target);
+  } else if (state.update) {
+    status(`updated to ${target} — restart Capper to apply`, "ok");
+    btn.hidden = true;
+    btn.disabled = false;
+  }
+}
+
+// Poll the server until it comes back on the new version, then reload the page.
+async function waitForRestart(target) {
+  const start = Date.now();
+  while (Date.now() - start < 60000) {
+    await new Promise((r) => setTimeout(r, 1000));
+    try {
+      const r = await fetch("/api/version", { cache: "no-store" });
+      const j = await r.json();
+      if (j.version === target || j.version !== state.version) {
+        location.reload();
+        return;
+      }
+    } catch (e) {
+      // server still down between exit and relaunch — keep polling
+    }
+  }
+  status("restart is taking a while — reload the page once Capper is back", "err");
+}
+
+$("#update-btn").addEventListener("click", runUpdate);
+
 restore();
 loadConfig();
 loadFonts();
+checkVersion().then(checkUpdate);

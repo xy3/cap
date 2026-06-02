@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"capper/caption"
@@ -44,7 +45,32 @@ func init() {
 }
 
 func Execute() error {
+	prependExecDirToPath()
 	return rootCmd.Execute()
+}
+
+// prependExecDirToPath ensures helper binaries bundled alongside the capper
+// executable (e.g. ffmpeg.exe / ffprobe.exe in the Windows package) are
+// discoverable on PATH, so both direct exec calls and the ffmpeg-go library
+// find them even when the user double-clicks the binary outside a shell.
+// On Linux this is a harmless no-op unless ffmpeg actually sits next to the
+// binary, so the normal system ffmpeg on PATH continues to be used.
+func prependExecDirToPath() {
+	exe, err := os.Executable()
+	if err != nil {
+		return
+	}
+	dir := filepath.Dir(exe)
+	sep := string(os.PathListSeparator)
+	path := os.Getenv("PATH")
+	if path == "" {
+		os.Setenv("PATH", dir)
+		return
+	}
+	if strings.HasPrefix(path, dir+sep) {
+		return
+	}
+	os.Setenv("PATH", dir+sep+path)
 }
 
 func runCapper(cmd *cobra.Command, args []string) error {

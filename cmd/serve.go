@@ -5,14 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"capper/config"
 	"capper/render"
@@ -42,6 +44,9 @@ func init() {
 }
 
 func runServe(cmd *cobra.Command, args []string) error {
+	// Remove any leftover binary from a previous in-place update.
+	cleanupOldExecutable()
+
 	sub, err := fs.Sub(uiFS, "ui")
 	if err != nil {
 		return err
@@ -56,10 +61,106 @@ func runServe(cmd *cobra.Command, args []string) error {
 	mux.HandleFunc("/api/generate", handleGenerate)
 	mux.HandleFunc("/api/file", handleFile)
 	mux.HandleFunc("/api/fonts", handleFonts)
+	mux.HandleFunc("/api/version", handleVersion)
+	mux.HandleFunc("/api/update", handleUpdate)
+	mux.HandleFunc("/api/pick", handlePick)
+	mux.HandleFunc("/api/reveal", handleReveal)
 
 	addr := fmt.Sprintf(":%d", servePort)
+
+	// Retry binding for a few seconds: right after a self-update restart the
+	// previous process may still be releasing the port.
+	var ln net.Listener
+	deadline := time.Now().Add(10 * time.Second)
+	for {
+		ln, err = net.Listen("tcp", addr)
+		if err == nil {
+			break
+		}
+		if time.Now().After(deadline) {
+			return fmt.Errorf("binding %s: %w", addr, err)
+		}
+		time.Sleep(300 * time.Millisecond)
+	}
+
 	fmt.Printf("Capper UI listening on http://localhost%s\n", addr)
-	return http.ListenAndServe(addr, mux)
+	return http.Serve(ln, mux)
+}
+
+func handleVersion(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, 200, map[string]any{
+		"version": Version,
+		"os":      runtime.GOOS,
+		"arch":    runtime.GOARCH,
+		// canRestart reports whether a self-update can auto-relaunch (the
+		// run.bat loop sets CAPPER_RELAUNCH so the UI knows to expect a restart).
+		"can_restart": os.Getenv("CAPPER_RELAUNCH") == "1",
+	})
+}
+
+// handleUpdate checks for updates (GET) or downloads + installs one (POST,
+// streaming progress as NDJSON). On a successful install it exits with
+// restartExitCode so the run.bat loop relaunches the new binary.
+func handleUpdate(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		st, err := checkForUpdate()
+		if err != nil {
+			writeErr(w, 502, err.Error())
+			return
+		}
+		writeJSON(w, 200, st)
+		return
+	}
+	if r.Method != http.MethodPost {
+		writeErr(w, 405, "method not allowed")
+		return
+	}
+
+	streamNDJSON(w, func(emit func(any)) {
+		st, err := checkForUpdate()
+		if err != nil {
+			emit(map[string]any{"type": "error", "error": err.Error()})
+			return
+		}
+		if !st.Available {
+			emit(map[string]any{"type": "uptodate", "version": st.Current})
+			return
+		}
+
+		emit(map[string]any{"type": "stage", "stage": "downloading"})
+		var lastPct int
+		data, err := downloadAsset(st.AssetURL, st.AssetSize, func(done, total int64) {
+			if total <= 0 {
+				return
+			}
+			pct := int(float64(done) / float64(total) * 100)
+			if pct != lastPct {
+				lastPct = pct
+				emit(map[string]any{"type": "progress", "stage": "downloading", "value": float64(done) / float64(total)})
+			}
+		})
+		if err != nil {
+			emit(map[string]any{"type": "error", "error": err.Error()})
+			return
+		}
+
+		emit(map[string]any{"type": "stage", "stage": "installing"})
+		if err := replaceExecutable(data); err != nil {
+			emit(map[string]any{"type": "error", "error": err.Error()})
+			return
+		}
+
+		if os.Getenv("CAPPER_RELAUNCH") == "1" {
+			emit(map[string]any{"type": "done", "version": st.Latest, "restarting": true})
+			// Give the response time to flush, then exit so run.bat relaunches.
+			go func() {
+				time.Sleep(800 * time.Millisecond)
+				os.Exit(restartExitCode)
+			}()
+		} else {
+			emit(map[string]any{"type": "done", "version": st.Latest, "restarting": false})
+		}
+	})
 }
 
 type generateReq struct {
@@ -271,7 +372,7 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 		"-ss", fmt.Sprintf("%.3f", req.Time),
 		"-copyts",
 		"-i", req.Input,
-		"-vf", "ass=" + escapeAssPath(absAss),
+		"-vf", "ass=" + render.EscapeASSPath(absAss),
 		"-frames:v", "1",
 		"-update", "1",
 		"-loglevel", "error",
@@ -291,12 +392,6 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/png")
 	w.Header().Set("Cache-Control", "no-store")
 	w.Write(data)
-}
-
-func escapeAssPath(p string) string {
-	p = strings.ReplaceAll(p, `\`, `\\`)
-	p = strings.ReplaceAll(p, `:`, `\:`)
-	return p
 }
 
 func handleGenerate(w http.ResponseWriter, r *http.Request) {
@@ -329,6 +424,46 @@ func handleGenerate(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// handlePick opens a native file dialog and returns the chosen absolute path.
+func handlePick(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Mode    string `json:"mode"`    // "open" | "save"
+		Title   string `json:"title"`
+		Default string `json:"default"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeErr(w, 400, err.Error())
+		return
+	}
+	if req.Title == "" {
+		req.Title = "Select a file"
+	}
+	path, err := pickFile(req.Mode, req.Title, req.Default)
+	if err != nil {
+		writeErr(w, 500, "file dialog unavailable: "+err.Error())
+		return
+	}
+	if path == "" {
+		writeJSON(w, 200, map[string]any{"canceled": true})
+		return
+	}
+	writeJSON(w, 200, map[string]any{"path": path})
+}
+
+// handleReveal opens the OS file manager with the given file highlighted.
+func handleReveal(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Query().Get("path")
+	if path == "" {
+		writeErr(w, 400, "missing path")
+		return
+	}
+	if err := revealFile(path); err != nil {
+		writeErr(w, 500, err.Error())
+		return
+	}
+	writeJSON(w, 200, map[string]any{"ok": true})
+}
+
 func handleFile(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("path")
 	if path == "" {
@@ -339,25 +474,7 @@ func handleFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleFonts(w http.ResponseWriter, r *http.Request) {
-	out, err := exec.Command("fc-list", ":", "family").Output()
-	if err != nil {
-		writeJSON(w, 200, map[string]any{"fonts": []string{}})
-		return
-	}
-	seen := map[string]bool{}
-	for _, line := range strings.Split(string(out), "\n") {
-		name := strings.TrimSpace(strings.SplitN(line, ",", 2)[0])
-		if name == "" {
-			continue
-		}
-		seen[name] = true
-	}
-	list := make([]string, 0, len(seen))
-	for k := range seen {
-		list = append(list, k)
-	}
-	sort.Strings(list)
-	writeJSON(w, 200, map[string]any{"fonts": list})
+	writeJSON(w, 200, map[string]any{"fonts": listFonts()})
 }
 
 func noCache(h http.Handler) http.Handler {

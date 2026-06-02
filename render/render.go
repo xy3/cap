@@ -198,6 +198,16 @@ func (b *ASSBuilder) Build() string {
 	return sb.String()
 }
 
+// EscapeASSPath escapes a filesystem path for use in an ffmpeg "ass=" filter
+// argument. It normalises to forward slashes (which ffmpeg accepts on Windows)
+// and escapes the drive colon so the filtergraph parser does not treat it as an
+// option separator. On Linux a normal path is returned unchanged.
+func EscapeASSPath(p string) string {
+	p = filepath.ToSlash(p)
+	p = strings.ReplaceAll(p, ":", `\:`)
+	return p
+}
+
 func secondsToASS(seconds float64) string {
 	h := int(seconds) / 3600
 	m := (int(seconds) % 3600) / 60
@@ -255,7 +265,7 @@ func RenderVideoWithProgress(inputVideo, assPath, outputPath string, onProgress 
 	ffmpegArgs := []string{
 		"-y",
 		"-i", inputVideo,
-		"-vf", "ass=" + absAss,
+		"-vf", "ass=" + EscapeASSPath(absAss),
 		"-c:a", "copy",
 		"-progress", "pipe:1",
 		"-nostats",

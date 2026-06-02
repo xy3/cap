@@ -76,6 +76,65 @@ Or:
 go install .
 ```
 
+### Windows package
+
+Capper runs on Windows as well as Linux/macOS. To produce a **fully
+self-contained** Windows bundle — transcription *and* rendering work offline,
+with no Python, no separate FFmpeg, and no API key — run from Linux or macOS:
+
+```bash
+./scripts/build-windows.sh
+```
+
+This cross-compiles `capper.exe` and downloads a static win64 FFmpeg,
+whisper.cpp, and a speech model, assembling:
+
+```
+dist/capper-win64.zip   (~286 MB)
+└── capper-win64/
+    ├── capper.exe        # CLI + embedded web UI
+    ├── ffmpeg.exe        # render & preview
+    ├── ffprobe.exe
+    ├── whisper-cli.exe   # offline transcription (whisper.cpp)
+    ├── *.dll             # whisper.cpp + OpenBLAS runtime
+    ├── ggml-base.bin     # bundled speech model (~148 MB)
+    ├── run.bat           # double-click to launch the styling UI
+    └── my_config.json    # caption style, pre-wired to the bundled whisper
+```
+
+The user unzips it anywhere and double-clicks **`run.bat`** to open the UI at
+`http://localhost:8080`. `capper.exe` prepends its own folder to `PATH` on
+startup, so it finds the bundled FFmpeg and whisper with no setup. For CLI use,
+run `capper.exe --input video.mp4 ...` from that folder.
+
+The model is overridable at build time — e.g. `MODEL=ggml-small.bin
+./scripts/build-windows.sh` for higher accuracy, or `ggml-base.en.bin` for a
+smaller English-only model. (You can still switch the config to the OpenAI API
+or Python whisper instead; the bundle just defaults to offline whisper.cpp.)
+
+### Updating Windows users
+
+Updates ship as just the ~18 MB `capper.exe` — the bundled FFmpeg, whisper, and
+model never change, so users never re-download the full bundle. The version is
+baked into the binary and the app self-updates from GitHub Releases.
+
+**To publish an update:**
+
+```bash
+VERSION=v1.3.0 ./scripts/build-windows.sh    # bakes the version in
+git tag v1.3.0 && git push --tags
+# Create a GitHub release for v1.3.0 and attach dist/capper.exe as an asset.
+```
+
+**What the user sees:** when they open the UI, capper checks the latest release.
+If a newer version exists, a green **"⬆ Update to v1.3.0"** button appears in the
+header. Clicking it downloads the new `capper.exe`, swaps it in place, and — when
+launched via `run.bat` — capper restarts itself on the same port and the page
+reloads into the new version automatically. No manual download, no reinstall.
+
+(There's also a CLI: `capper.exe update` to update in place, and
+`capper.exe version` to print the current version.)
+
 ## Usage
 
 ```bash

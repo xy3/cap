@@ -1,0 +1,51 @@
+name: release
+
+# Cut a release by pushing a version tag:
+#
+#   git tag v1.3.0 && git push --tags
+#
+# GitHub then builds the Linux binary and the full Windows bundle, and publishes
+# a release with the assets the in-app self-updater expects. Nothing is built on
+# your machine.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build Linux + Windows artifacts
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # Linux self-update asset (must keep this exact name).
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+            go build -trimpath -ldflags "-s -w -X capper/cmd.Version=$VERSION" \
+            -o dist/capper-linux-amd64 .
+          # Windows bundle + standalone update exe (downloads ffmpeg, whisper, model).
+          ./scripts/build-windows.sh
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: capper ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            dist/capper.exe
+            dist/capper-linux-amd64
+            dist/capper-win64.zip

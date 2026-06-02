@@ -7,18 +7,24 @@
 </head>
 <body>
 <header>
-  <div class="brand">capper</div>
+  <div class="brand">capper<span id="version-tag" title="installed version"></span></div>
   <div class="io">
+    <button id="update-btn" class="update" hidden></button>
     <label class="field">
       <span>Video</span>
-      <input id="input-path" type="text" placeholder="video.mp4" spellcheck="false">
+      <div class="path-pick">
+        <input id="input-path" type="text" placeholder="Choose a video…" spellcheck="false">
+        <button id="input-browse" title="Choose video file">Browse…</button>
+      </div>
     </label>
     <label class="field">
       <span>Output</span>
-      <input id="output-path" type="text" placeholder="output.mp4" spellcheck="false">
+      <div class="path-pick">
+        <input id="output-path" type="text" placeholder="(auto: next to the video)" spellcheck="false">
+        <button id="output-browse" title="Choose where to save the result">Save as…</button>
+      </div>
     </label>
-    <button id="load-btn">Load</button>
-    <button id="save-btn" title="Write current settings back to my_config.json">Save</button>
+    <button id="save-btn" title="Write current settings back to my_config.json">Save settings</button>
     <button id="generate-btn" class="primary">Generate ▶</button>
   </div>
 </header>
@@ -278,7 +284,10 @@
       <div class="bar-label"><span id="progress-stage"></span><span id="progress-pct"></span></div>
       <div class="bar"><div id="progress-fill"></div></div>
     </div>
-    <div id="status">load a video to begin</div>
+    <div id="statusbar">
+      <div id="status">choose a video to begin</div>
+      <button id="reveal-btn" hidden title="Show the output file in your file manager">📂 Open output folder</button>
+    </div>
   </section>
 </main>
 
