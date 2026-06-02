@@ -7,6 +7,31 @@
 ::-webkit-scrollbar-corner { background: #101015; }
 html, body { margin: 0; height: 100%; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: #0c0c0f; color: #e6e6e6; font-size: 13px; }
 
+#onboarding {
+  position: fixed; inset: 0; z-index: 1000;
+  background: #0c0c0f;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+#onboarding[hidden] { display: none; }
+.onboard-card {
+  width: 100%; max-width: 460px;
+  background: #15151a; border: 1px solid #25252c; border-radius: 12px;
+  padding: 28px 28px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.onboard-card .brand { font-size: 22px; align-self: center; margin-bottom: 4px; }
+.onboard-card h1 { font-size: 18px; font-weight: 600; margin: 0; }
+.onboard-sub { font-size: 13px; color: #999; margin: 0; line-height: 1.5; }
+.onboard-field { display: flex; gap: 8px; }
+.onboard-field select, .onboard-field input { flex: 1; min-width: 0; }
+#onb-model-select, #onb-input-path { padding: 8px 10px; }
+.onboard-load { width: 100%; padding: 10px; font-size: 14px; }
+#onboard-status { font-size: 12px; min-height: 16px; color: #888; }
+#onboard-status.ok { color: #5dd47a; }
+#onboard-status.err { color: #ff6b6b; }
+#onboard-status.busy { color: #1e90ff; }
+
 header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 8px 16px; background: #15151a; border-bottom: 1px solid #25252c;
@@ -124,6 +149,12 @@ main {
 .mini-progress .bar-label { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; font-variant-numeric: tabular-nums; }
 .mini-progress .bar { height: 6px; background: #1c1c22; border-radius: 3px; overflow: hidden; }
 .mini-progress .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, #1e90ff, #5dd47a); transition: width 0.2s ease; }
+/* pending state: animate while waiting for the first progress report */
+.mini-progress.indeterminate .bar > div {
+  width: 35% !important;
+  background: linear-gradient(90deg, transparent, #1e90ff, transparent);
+  animation: slide 1.4s infinite linear;
+}
 
 .hint { display: block; font-size: 11px; color: #666; margin-top: 4px; }
 

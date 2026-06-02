@@ -19,7 +19,9 @@ const state = {
 const STORAGE_KEY = "capper.last";
 
 function status(msg, kind) {
-  const el = $("#status");
+  const onb = $("#onboarding");
+  const el = onb && !onb.hidden ? $("#onboard-status") : $("#status");
+  if (!el) return;
   el.textContent = msg;
   el.className = kind || "";
 }
@@ -122,9 +124,9 @@ function deriveOutput(input) {
   return dir + base + "-captioned.mp4";
 }
 
-async function loadInput() {
+async function loadInput(bar = mainBar) {
   const input = $("#input-path").value.trim();
-  if (!input) { status("choose a video first", "err"); return; }
+  if (!input) { status("choose a video first", "err"); return false; }
   state.input = input;
   if (!$("#output-path").value.trim()) {
     $("#output-path").value = deriveOutput(input);
@@ -136,7 +138,7 @@ async function loadInput() {
     status("loading video info…", "busy");
     const r = await fetch(`/api/info?input=${encodeURIComponent(input)}`);
     const j = await r.json().catch(() => ({ error: "invalid response from server" }));
-    if (j.error) { status(j.error, "err"); return; }
+    if (j.error) { status(j.error, "err"); return false; }
 
     state.duration = j.duration;
     state.hasCache = j.has_cache;
@@ -145,8 +147,8 @@ async function loadInput() {
 
     if (!state.hasCache) {
       status("transcribing audio… this only happens once", "busy");
-      const ok = await transcribe();
-      if (!ok) return;
+      const ok = await transcribe(false, bar);
+      if (!ok) return false;
     }
 
     if (state.previewTime > state.duration || state.previewTime < 0.5) {
@@ -155,9 +157,11 @@ async function loadInput() {
     $("#time").value = state.previewTime;
     $("#time-label").textContent = formatTime(state.previewTime);
     updatePreview();
+    return true;
   } catch (e) {
     status("load failed: " + e.message, "err");
     $("#spinner").hidden = true;
+    return false;
   } finally {
     $("#input-browse").disabled = false;
   }
@@ -247,35 +251,40 @@ async function streamNDJSON(url, body, onEvent) {
   }
 }
 
-function showProgress(stage) {
-  $("#progress").hidden = false;
-  setStage(stage, null);
+// A progress bar bound to an element group: #<id>, #<id>-stage, #<id>-pct,
+// #<id>-fill. value === null → indeterminate animation; a number → determinate %.
+function makeBar(id) {
+  const root = () => $("#" + id);
+  return {
+    show(stage) { root().hidden = false; this.set(stage, null); },
+    hide() { root().hidden = true; root().classList.remove("indeterminate"); },
+    set(stage, value) {
+      $("#" + id + "-stage").textContent = stage;
+      if (value == null) {
+        root().classList.add("indeterminate");
+        $("#" + id + "-pct").textContent = "";
+      } else {
+        root().classList.remove("indeterminate");
+        const pct = Math.round(value * 100);
+        $("#" + id + "-fill").style.width = pct + "%";
+        $("#" + id + "-pct").textContent = pct + "%";
+      }
+    },
+  };
 }
-function hideProgress() {
-  $("#progress").hidden = true;
-  $("#progress").classList.remove("indeterminate");
-}
-// value === null/undefined → indeterminate animation; a number → determinate %.
-function setStage(stage, value) {
-  $("#progress-stage").textContent = stage;
-  if (value == null) {
-    $("#progress").classList.add("indeterminate");
-    $("#progress-pct").textContent = "";
-  } else {
-    $("#progress").classList.remove("indeterminate");
-    const pct = Math.round(value * 100);
-    $("#progress-fill").style.width = pct + "%";
-    $("#progress-pct").textContent = pct + "%";
-  }
-}
+const mainBar = makeBar("progress");
+const onboardBar = makeBar("onboard-progress");
+function showProgress(stage) { mainBar.show(stage); }
+function hideProgress() { mainBar.hide(); }
+function setStage(stage, value) { mainBar.set(stage, value); }
 
-async function transcribe(force = false) {
+async function transcribe(force = false, bar = mainBar) {
   let ok = false;
-  showProgress("transcribing");
+  bar.show("transcribing");
   try {
     await streamNDJSON("/api/transcribe", { config: state.config, input: state.input, force }, (e) => {
-      if (e.type === "stage") setStage(e.stage, null);
-      else if (e.type === "progress") setStage(e.stage, e.value);
+      if (e.type === "stage") bar.set(e.stage, null);
+      else if (e.type === "progress") bar.set(e.stage, e.value);
       else if (e.type === "done") {
         state.hasCache = true;
         status(`transcribed ${e.words} words (${e.duration.toFixed(1)}s)`, "ok");
@@ -287,7 +296,7 @@ async function transcribe(force = false) {
   } catch (err) {
     status("transcribe failed: " + err.message, "err");
   } finally {
-    hideProgress();
+    bar.hide();
   }
   return ok;
 }
@@ -602,7 +611,112 @@ async function downloadModel() {
 }
 $("#model-download-btn").addEventListener("click", downloadModel);
 
-restore();
-loadConfig().then(loadModels);
-loadFonts();
-checkVersion().then(checkUpdate);
+// --- onboarding flow -------------------------------------------------------
+
+function showOnboardScreen(name) {
+  $("#onboarding").hidden = false;
+  $("#screen-model").hidden = name !== "model";
+  $("#screen-input").hidden = name !== "input";
+  $("#onboard-progress").hidden = true;
+  $("#onboard-status").textContent = "";
+  if (name === "model") renderOnboardModels();
+  if (name === "input") $("#onb-input-path").focus();
+}
+
+function finishOnboarding() {
+  $("#onboarding").hidden = true;
+}
+
+function renderOnboardModels() {
+  const sel = $("#onb-model-select");
+  sel.innerHTML = state.models
+    .map((m) => `<option value="${m.file}">${m.name} — ${modelSizeLabel(m.size_mb)}${m.downloaded ? " ✓" : ""}</option>`)
+    .join("");
+  const cur = state.config?.whisper?.model_path;
+  if (state.models.some((m) => m.file === cur)) sel.value = cur;
+  updateOnboardModelHint();
+}
+
+function onbModel() {
+  return state.models.find((m) => m.file === $("#onb-model-select").value);
+}
+
+function updateOnboardModelHint() {
+  const m = onbModel();
+  const btn = $("#onb-model-download");
+  if (m && m.downloaded) {
+    btn.textContent = "Continue ▶";
+    $("#onb-model-hint").textContent = "already downloaded";
+  } else {
+    btn.textContent = `⬇ Download${m ? " (" + modelSizeLabel(m.size_mb) + ")" : ""}`;
+    $("#onb-model-hint").textContent = "Tip: base or small is a good place to start — you can add bigger models later.";
+  }
+}
+
+function setActiveModel(file) {
+  if (state.config?.whisper) state.config.whisper.model_path = file;
+  persistModelChoice();
+  renderModelSelect();
+}
+
+async function onbModelAction() {
+  const m = onbModel();
+  if (!m) return;
+  if (m.downloaded) { setActiveModel(m.file); showOnboardScreen("input"); return; }
+  const btn = $("#onb-model-download");
+  btn.disabled = true;
+  status(`downloading ${m.name} (${modelSizeLabel(m.size_mb)})…`, "busy");
+  onboardBar.show("downloading");
+  try {
+    await streamNDJSON("/api/models/download", { file: m.file }, (e) => {
+      if (e.type === "progress") onboardBar.set("downloading", e.value);
+      else if (e.type === "done") status(`✓ ${m.name} ready`, "ok");
+      else if (e.type === "error") status("download failed: " + e.error, "err");
+    });
+    setActiveModel(m.file);
+    await loadModels();
+    showOnboardScreen("input");
+  } catch (err) {
+    status("download failed: " + err.message, "err");
+  } finally {
+    btn.disabled = false;
+    onboardBar.hide();
+  }
+}
+
+async function onbLoad() {
+  const path = $("#onb-input-path").value.trim();
+  if (!path) { status("choose a video first", "err"); return; }
+  $("#input-path").value = path;
+  $("#onb-load").disabled = true;
+  $("#onb-browse").disabled = true;
+  try {
+    const ok = await loadInput(onboardBar);
+    if (ok) finishOnboarding();
+  } finally {
+    $("#onb-load").disabled = false;
+    $("#onb-browse").disabled = false;
+  }
+}
+
+$("#onb-model-select").addEventListener("change", updateOnboardModelHint);
+$("#onb-model-download").addEventListener("click", onbModelAction);
+$("#onb-browse").addEventListener("click", async () => {
+  const path = await pickPath("open", "Select input video", $("#onb-input-path").value);
+  if (path) $("#onb-input-path").value = path;
+});
+$("#onb-load").addEventListener("click", onbLoad);
+$("#onb-input-path").addEventListener("keydown", (e) => { if (e.key === "Enter") onbLoad(); });
+
+async function start() {
+  restore();
+  await loadConfig();
+  await loadModels();
+  loadFonts();
+  checkVersion().then(checkUpdate);
+  if (state.input) $("#onb-input-path").value = state.input;
+  const needsModel = state.config?.whisper?.mode === "local" && !state.models.some((m) => m.downloaded);
+  showOnboardScreen(needsModel ? "model" : "input");
+}
+
+start();

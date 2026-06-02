@@ -6,6 +6,38 @@
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+<div id="onboarding">
+  <div class="onboard-card">
+    <div class="brand">capper</div>
+
+    <div id="screen-model" hidden>
+      <h1>Set up a speech model</h1>
+      <p class="onboard-sub">Capper transcribes your video on your own machine. Choose a model to download — larger models are more accurate, but bigger and slower.</p>
+      <div class="onboard-field">
+        <select id="onb-model-select"></select>
+        <button id="onb-model-download" class="primary">Download</button>
+      </div>
+      <p class="hint" id="onb-model-hint"></p>
+    </div>
+
+    <div id="screen-input" hidden>
+      <h1>Open a video</h1>
+      <p class="onboard-sub">Choose the video you want to caption.</p>
+      <div class="onboard-field path-pick">
+        <input id="onb-input-path" type="text" placeholder="Choose a video…" spellcheck="false">
+        <button id="onb-browse">Browse…</button>
+      </div>
+      <button id="onb-load" class="primary onboard-load">Load ▶</button>
+    </div>
+
+    <div id="onboard-progress" class="mini-progress" hidden>
+      <div class="bar-label"><span id="onboard-progress-stage"></span><span id="onboard-progress-pct"></span></div>
+      <div class="bar"><div id="onboard-progress-fill"></div></div>
+    </div>
+    <div id="onboard-status"></div>
+  </div>
+</div>
+
 <header>
   <div class="brand">capper<span id="version-tag" title="installed version"></span></div>
   <div class="io">
