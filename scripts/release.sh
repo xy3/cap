@@ -8,8 +8,8 @@
 # It produces and uploads:
 #   capper.exe              <- Windows self-update asset (must keep this name)
 #   capper-linux-amd64      <- Linux self-update asset   (must keep this name)
-#   capper-win64.zip        <- CPU bundle (ffmpeg + whisper.cpp + base model)
-#   capper-win64-cuda.zip   <- CUDA/GPU bundle (CPU fallback; base model)
+#   capper-win64.zip        <- CPU bundle (ffmpeg + whisper.cpp, no model)
+#   capper-win64-cuda.zip   <- CUDA/GPU bundle (CPU fallback, no model)
 #
 # Requires: go, gh (authenticated: `gh auth login`), plus the tools
 # build-windows.sh needs (curl, unzip, zip, python3) and network access.
@@ -44,11 +44,11 @@ echo ">> Building Linux binary (linux/amd64)"
     go build -trimpath -ldflags "$LDFLAGS" -o "$DIST/capper-linux-amd64" . )
 
 echo ">> Building Windows GPU (CUDA) bundle"
-VERSION="$VERSION" GPU=1 "$ROOT/scripts/build-windows.sh"
+VERSION="$VERSION" GPU=1 MODEL=none "$ROOT/scripts/build-windows.sh"
 mv "$DIST/capper-win64.zip" "$DIST/capper-win64-cuda.zip"
 
 echo ">> Building Windows CPU bundle + update exe"
-VERSION="$VERSION" "$ROOT/scripts/build-windows.sh"
+VERSION="$VERSION" MODEL=none "$ROOT/scripts/build-windows.sh"
 
 echo ">> Tagging $VERSION"
 if ! git -C "$ROOT" rev-parse "$VERSION" >/dev/null 2>&1; then

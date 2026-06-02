@@ -122,17 +122,18 @@ Each release publishes **both**:
 
 | Download | For |
 |----------|-----|
-| `capper-win64.zip` | CPU — works everywhere (~290 MB) |
-| `capper-win64-cuda.zip` | NVIDIA GPU, CPU fallback (~1 GB) |
+| `capper-win64.zip` | CPU — works everywhere (~150 MB) |
+| `capper-win64-cuda.zip` | NVIDIA GPU, CPU fallback (~580 MB) |
 
 So a GPU user just downloads `capper-win64-cuda.zip` and runs `run.bat` — no
 manual DLL swapping. The `capper.exe` inside is identical to the CPU one, so the
 in-app updater works for either.
 
-**Models:** both bundles ship the small `base` model so they work immediately.
-Bigger models (small / medium / large) are downloaded **from inside the app** —
-the *Speech model* panel lists every model with its size and a one-click
-download, and remembers your choice. No manual model files to manage.
+**Models:** the bundles ship **no** speech model — you download one on first run
+from the *Speech model* panel, which lists every model (tiny → large) with its
+size and a one-click download, and remembers your choice. The config points at
+`base` by default, so it's pre-selected and one click away. No manual model files
+to manage.
 
 ### Updating Windows users
 

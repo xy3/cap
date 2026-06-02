@@ -47,12 +47,12 @@ jobs:
             go build -trimpath -ldflags "-s -w -X capper/cmd.Version=$VERSION" \
             -o dist/capper-linux-amd64 .
           # GPU (CUDA) bundle first; rename so the CPU build's zip doesn't
-          # clobber it. capper.exe is identical between the two. Both ship the
-          # small base model; users download bigger models from the app's UI.
-          GPU=1 ./scripts/build-windows.sh
+          # clobber it. capper.exe is identical between the two. No model is
+          # bundled — users download one from the app's Speech model panel.
+          GPU=1 MODEL=none ./scripts/build-windows.sh
           mv dist/capper-win64.zip dist/capper-win64-cuda.zip
-          # CPU bundle (base model) → dist/capper-win64.zip + dist/capper.exe.
-          ./scripts/build-windows.sh
+          # CPU bundle → dist/capper-win64.zip + dist/capper.exe.
+          MODEL=none ./scripts/build-windows.sh
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
