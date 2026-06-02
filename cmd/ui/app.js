@@ -162,19 +162,30 @@ async function loadInput() {
   }
 }
 
+let picking = false;
 async function pickPath(mode, title, def) {
-  const r = await fetch("/api/pick", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ mode, title, default: def || "" }),
-  });
-  const j = await r.json().catch(() => ({ error: "dialog failed" }));
-  if (j.error) { status(j.error, "err"); return null; }
-  return j.canceled ? null : j.path;
+  if (picking) return null; // a dialog is already open
+  picking = true;
+  $("#input-browse").disabled = true;
+  $("#output-browse").disabled = true;
+  try {
+    const r = await fetch("/api/pick", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode, title, default: def || "" }),
+    });
+    const j = await r.json().catch(() => ({ error: "dialog failed" }));
+    if (j.error) { status(j.error, "err"); return null; }
+    return j.canceled ? null : j.path;
+  } finally {
+    picking = false;
+    $("#input-browse").disabled = false;
+    $("#output-browse").disabled = false;
+  }
 }
 
 async function browseInput() {
-  status("opening file picker…", "busy");
+  status("file picker open — pick a video (check your taskbar if you don't see it)", "busy");
   const path = await pickPath("open", "Select input video", state.input || $("#input-path").value);
   if (!path) { status("ready", ""); return; }
   $("#input-path").value = path;

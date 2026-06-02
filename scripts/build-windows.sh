@@ -25,6 +25,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST="$ROOT/dist/capper-win64"
 
+# Resilient download: retry on transient failures including HTTP 429
+# (HuggingFace rate-limits the model) and 5xx, with backoff.
+dl() {
+    curl -L --fail --retry 6 --retry-delay 5 --retry-all-errors --retry-connrefused "$@"
+}
+
 # A static win64 ffmpeg build (GPL). Override FFMPEG_URL to pin a version.
 FFMPEG_URL="${FFMPEG_URL:-https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip}"
 
@@ -53,7 +59,7 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 echo ">> Fetching ffmpeg: $FFMPEG_URL"
-curl -L --fail -o "$TMP/ffmpeg.zip" "$FFMPEG_URL"
+dl -o "$TMP/ffmpeg.zip" "$FFMPEG_URL"
 unzip -q "$TMP/ffmpeg.zip" -d "$TMP/ffmpeg"
 FFMPEG_EXE="$(find "$TMP/ffmpeg" -name ffmpeg.exe | head -n1)"
 FFPROBE_EXE="$(find "$TMP/ffmpeg" -name ffprobe.exe | head -n1)"
@@ -64,7 +70,7 @@ fi
 cp "$FFMPEG_EXE" "$FFPROBE_EXE" "$DIST/"
 
 echo ">> Fetching whisper.cpp: $WHISPER_URL"
-curl -L --fail -o "$TMP/whisper.zip" "$WHISPER_URL"
+dl -o "$TMP/whisper.zip" "$WHISPER_URL"
 unzip -q "$TMP/whisper.zip" -d "$TMP/whisper"
 WHISPER_EXE="$(find "$TMP/whisper" -name whisper-cli.exe | head -n1)"
 if [[ -z "$WHISPER_EXE" ]]; then
@@ -77,7 +83,7 @@ cp "$WHISPER_EXE" "$DIST/"
 cp "$WHISPER_DIR"/*.dll "$DIST/"
 
 echo ">> Fetching model: $MODEL_URL"
-curl -L --fail -o "$DIST/$MODEL" "$MODEL_URL"
+dl -o "$DIST/$MODEL" "$MODEL_URL"
 
 echo ">> Writing run.bat and bundled config"
 cp "$ROOT/scripts/run.bat" "$DIST/run.bat"

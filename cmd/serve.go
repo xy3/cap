@@ -366,19 +366,26 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	defer os.Remove(tmpPng.Name())
 
 	absAss, _ := filepath.Abs(tmpAss.Name())
+	inputAbs, _ := filepath.Abs(req.Input)
+	pngAbs, _ := filepath.Abs(tmpPng.Name())
 
+	// Pass the subtitle file as a bare filename with ffmpeg's working directory
+	// set to its folder. This avoids putting a Windows drive colon (C:\...) into
+	// the filtergraph, which ffmpeg would misparse as an "ass" filter option.
 	args := []string{
 		"-y",
 		"-ss", fmt.Sprintf("%.3f", req.Time),
 		"-copyts",
-		"-i", req.Input,
-		"-vf", "ass=" + render.EscapeASSPath(absAss),
+		"-i", inputAbs,
+		"-vf", "ass=" + filepath.Base(absAss),
 		"-frames:v", "1",
 		"-update", "1",
 		"-loglevel", "error",
-		tmpPng.Name(),
+		pngAbs,
 	}
-	out, err := exec.Command("ffmpeg", args...).CombinedOutput()
+	cmd := exec.Command("ffmpeg", args...)
+	cmd.Dir = filepath.Dir(absAss)
+	out, err := cmd.CombinedOutput()
 	if err != nil {
 		writeErr(w, 500, fmt.Sprintf("ffmpeg: %v: %s", err, out))
 		return

@@ -198,16 +198,6 @@ func (b *ASSBuilder) Build() string {
 	return sb.String()
 }
 
-// EscapeASSPath escapes a filesystem path for use in an ffmpeg "ass=" filter
-// argument. It normalises to forward slashes (which ffmpeg accepts on Windows)
-// and escapes the drive colon so the filtergraph parser does not treat it as an
-// option separator. On Linux a normal path is returned unchanged.
-func EscapeASSPath(p string) string {
-	p = filepath.ToSlash(p)
-	p = strings.ReplaceAll(p, ":", `\:`)
-	return p
-}
-
 func secondsToASS(seconds float64) string {
 	h := int(seconds) / 3600
 	m := (int(seconds) % 3600) / 60
@@ -251,26 +241,39 @@ func RenderVideoWithProgress(inputVideo, assPath, outputPath string, onProgress 
 	if err != nil {
 		return fmt.Errorf("resolving ASS path: %w", err)
 	}
+	// Absolute input/output so they still resolve after we set the ffmpeg
+	// working directory to the subtitle's folder (see below).
+	inAbs, err := filepath.Abs(inputVideo)
+	if err != nil {
+		return fmt.Errorf("resolving input path: %w", err)
+	}
+	outAbs, err := filepath.Abs(outputPath)
+	if err != nil {
+		return fmt.Errorf("resolving output path: %w", err)
+	}
 
 	var totalSec float64
 	if out, perr := exec.Command("ffprobe",
 		"-v", "error",
 		"-show_entries", "format=duration",
 		"-of", "default=nokey=1:noprint_wrappers=1",
-		inputVideo,
+		inAbs,
 	).Output(); perr == nil {
 		totalSec, _ = strconv.ParseFloat(strings.TrimSpace(string(out)), 64)
 	}
 
+	// Pass the subtitle as a bare filename with the working directory set to its
+	// folder, so a Windows drive colon never enters the filtergraph (ffmpeg would
+	// misparse "ass=C:\..." as filter options).
 	ffmpegArgs := []string{
 		"-y",
-		"-i", inputVideo,
-		"-vf", "ass=" + EscapeASSPath(absAss),
+		"-i", inAbs,
+		"-vf", "ass=" + filepath.Base(absAss),
 		"-c:a", "copy",
 		"-progress", "pipe:1",
 		"-nostats",
 		"-loglevel", "error",
-		outputPath,
+		outAbs,
 	}
 	var cmd *exec.Cmd
 	if stdbuf, lookErr := exec.LookPath("stdbuf"); lookErr == nil {
@@ -278,6 +281,7 @@ func RenderVideoWithProgress(inputVideo, assPath, outputPath string, onProgress 
 	} else {
 		cmd = exec.Command("ffmpeg", ffmpegArgs...)
 	}
+	cmd.Dir = filepath.Dir(absAss)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return fmt.Errorf("ffmpeg stdout pipe: %w", err)
