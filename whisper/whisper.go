@@ -211,7 +211,8 @@ func (c *LocalClient) runWhisperCPP(ctx context.Context, binary, model, audioPat
 		"-m", model,
 		"-f", audioPath,
 		"-oj",
-		"-ml", "1",
+		"-ml", "1", // one segment per unit...
+		"-sow",     // ...split on whole words, not subword tokens
 		"-of", outPrefix,
 	}
 
@@ -319,7 +320,7 @@ func parsePythonWhisperJSON(path string) (*TranscriptionResult, error) {
 	return result, nil
 }
 
-// --- whisper.cpp JSON format (with -ml 1 each segment is one word) ---
+// --- whisper.cpp JSON format (with -ml 1 -sow each segment is one word) ---
 
 type cppWhisperOutput struct {
 	Transcription []cppSegment `json:"transcription"`
