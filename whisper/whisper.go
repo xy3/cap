@@ -1,12 +1,14 @@
 package whisper
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
@@ -36,6 +38,9 @@ type Params struct {
 	Temperature float32
 	BinaryPath  string
 	ModelPath   string
+	// Progress, if set, is called with transcription progress in [0,1].
+	// Currently driven by the whisper.cpp backend.
+	Progress func(float64)
 }
 
 type OpenAIClient struct {
@@ -132,7 +137,7 @@ func (c *LocalClient) Transcribe(ctx context.Context, videoPath string, params P
 	}
 
 	if isWhisperCPP(binary) {
-		return c.runWhisperCPP(ctx, binary, model, audioPath, language, outPrefix)
+		return c.runWhisperCPP(ctx, binary, model, audioPath, language, outPrefix, params.Progress)
 	}
 
 	return c.runPythonWhisper(ctx, binary, model, audioPath, language, outPrefix)
@@ -206,13 +211,14 @@ func (c *LocalClient) runPythonWhisper(ctx context.Context, binary, model, audio
 	return parsePythonWhisperJSON(jsonPath)
 }
 
-func (c *LocalClient) runWhisperCPP(ctx context.Context, binary, model, audioPath, language, outPrefix string) (*TranscriptionResult, error) {
+func (c *LocalClient) runWhisperCPP(ctx context.Context, binary, model, audioPath, language, outPrefix string, progress func(float64)) (*TranscriptionResult, error) {
 	args := []string{
 		"-m", model,
 		"-f", audioPath,
 		"-oj",
 		"-ml", "1", // one segment per unit...
 		"-sow",     // ...split on whole words, not subword tokens
+		"-pp",      // print progress (parsed from stderr for the UI)
 		"-of", outPrefix,
 	}
 
@@ -222,14 +228,48 @@ func (c *LocalClient) runWhisperCPP(ctx context.Context, binary, model, audioPat
 
 	cmd := exec.CommandContext(ctx, binary, args...)
 	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
 
-	if err := cmd.Run(); err != nil {
+	// Tee stderr so the console still shows whisper's output while we parse the
+	// "progress = NN%" lines it prints with -pp.
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return nil, fmt.Errorf("whisper.cpp stderr pipe: %w", err)
+	}
+	if err := cmd.Start(); err != nil {
+		return nil, fmt.Errorf("running whisper.cpp: %w", err)
+	}
+	scanner := bufio.NewScanner(stderr)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fmt.Fprintln(os.Stderr, line)
+		if progress != nil {
+			if p, ok := parseWhisperProgress(line); ok {
+				progress(p)
+			}
+		}
+	}
+	if err := cmd.Wait(); err != nil {
 		return nil, fmt.Errorf("running whisper.cpp: %w", err)
 	}
 
 	jsonPath := outPrefix + ".json"
 	return parseWhisperCPPJSON(jsonPath)
+}
+
+// parseWhisperProgress extracts a fraction in [0,1] from a whisper.cpp
+// "whisper_print_progress_callback: progress =  42%" line.
+func parseWhisperProgress(line string) (float64, bool) {
+	i := strings.Index(line, "progress =")
+	if i < 0 {
+		return 0, false
+	}
+	rest := strings.TrimSpace(line[i+len("progress ="):])
+	rest = strings.TrimSpace(strings.TrimSuffix(rest, "%"))
+	n, err := strconv.Atoi(rest)
+	if err != nil || n < 0 || n > 100 {
+		return 0, false
+	}
+	return float64(n) / 100.0, true
 }
 
 func isWhisperCPP(binary string) bool {

@@ -206,6 +206,10 @@ func transcribeOrCacheProgress(cfg *config.Config, input, apiKeyArg string, forc
 	}
 	startTime := time.Now()
 
+	var onTranscribeProgress func(float64)
+	if emit != nil {
+		onTranscribeProgress = func(v float64) { emit.progress("transcribing", v) }
+	}
 	result, err := transcriber.Transcribe(context.Background(), input, whisper.Params{
 		Model:       cfg.Whisper.Model,
 		Language:    cfg.Whisper.Language,
@@ -213,6 +217,7 @@ func transcribeOrCacheProgress(cfg *config.Config, input, apiKeyArg string, forc
 		Temperature: cfg.Whisper.Temperature,
 		BinaryPath:  cfg.Whisper.BinaryPath,
 		ModelPath:   cfg.Whisper.ModelPath,
+		Progress:    onTranscribeProgress,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("transcription failed: %w", err)

@@ -248,20 +248,21 @@ async function streamNDJSON(url, body, onEvent) {
 
 function showProgress(stage) {
   $("#progress").hidden = false;
-  setStage(stage, 0);
+  setStage(stage, null);
 }
 function hideProgress() {
   $("#progress").hidden = true;
   $("#progress").classList.remove("indeterminate");
 }
+// value === null/undefined → indeterminate animation; a number → determinate %.
 function setStage(stage, value) {
   $("#progress-stage").textContent = stage;
-  if (stage === "transcribing") {
+  if (value == null) {
     $("#progress").classList.add("indeterminate");
     $("#progress-pct").textContent = "";
   } else {
     $("#progress").classList.remove("indeterminate");
-    const pct = Math.round((value || 0) * 100);
+    const pct = Math.round(value * 100);
     $("#progress-fill").style.width = pct + "%";
     $("#progress-pct").textContent = pct + "%";
   }
@@ -272,7 +273,7 @@ async function transcribe(force = false) {
   showProgress("transcribing");
   try {
     await streamNDJSON("/api/transcribe", { config: state.config, input: state.input, force }, (e) => {
-      if (e.type === "stage") setStage(e.stage, 0);
+      if (e.type === "stage") setStage(e.stage, null);
       else if (e.type === "progress") setStage(e.stage, e.value);
       else if (e.type === "done") {
         state.hasCache = true;
@@ -345,7 +346,7 @@ async function generate() {
   try {
     await streamNDJSON("/api/generate", { config: state.config, input: state.input }, (e) => {
       if (e.type === "stage") {
-        setStage(e.stage, 0);
+        setStage(e.stage, null);
         status(e.stage + "…", "busy");
       } else if (e.type === "progress") {
         setStage(e.stage, e.value);
@@ -442,7 +443,7 @@ async function runUpdate() {
   let restarting = false;
   try {
     await streamNDJSON("/api/update", {}, (e) => {
-      if (e.type === "stage") setStage(e.stage, 0);
+      if (e.type === "stage") setStage(e.stage, null);
       else if (e.type === "progress") setStage(e.stage, e.value);
       else if (e.type === "uptodate") {
         status("already up to date", "ok");
