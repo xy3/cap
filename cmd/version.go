@@ -15,7 +15,7 @@ import (
 var Version = "dev"
 
 // updateRepo is the GitHub "owner/name" the self-updater pulls releases from.
-const updateRepo = "xy3/capper"
+const updateRepo = "xy3/cap"
 
 // restartExitCode is returned after a successful in-place update so the
 // run.bat relaunch loop starts the new binary. See scripts/run.bat.

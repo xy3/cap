@@ -65,4 +65,4 @@ gh release create "$VERSION" \
     --title "capper $VERSION" \
     --generate-notes
 
-echo ">> Done: https://github.com/xy3/capper/releases/tag/$VERSION"
+echo ">> Done: https://github.com/xy3/cap/releases/tag/$VERSION"
