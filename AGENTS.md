@@ -43,8 +43,8 @@ capper/
 
 ### Caption (`caption/caption.go`)
 - `Frame`: Words, Text, Start, End time, Index
-- `GroupWords(words, cfg)`: splits words into frames based on `words_per_frame` (max count) and `max_gap_ms` (timing gap threshold). When `max_gap_ms > 0`, a pause exceeding that duration forces a split even before hitting `words_per_frame`
-- `GroupWordsKaraoke(words)`: groups into karaoke frames of 3 words each for ASS `\k` timing
+- `GroupWords(words, cfg)`: splits words into frames based on `chars_per_frame` (per-line character budget) and `max_gap_ms` (timing gap threshold). A word is flushed onto a new line before its addition would push the line past `chars_per_frame`; a single over-long word still goes alone. When `max_gap_ms > 0`, a pause exceeding that duration forces a split too
+- `GroupWordsKaraoke(words, cfg)`: groups per-word frames into lines up to `chars_per_frame` characters for ASS `\k` timing
 
 ### Animation (`animation/anim.go`)
 - `GenerateOverrideTags(frame, cfg)`: returns ASS inline tags like `{\fad(300,0)}`, `{\move(...)}`, or `{\fscx0\fscy0\t(...)}`
@@ -80,7 +80,7 @@ capper/
 
 | Mode | Config | Behavior |
 |------|--------|----------|
-| static | `display_mode: "static"` | Words grouped into frames, entrance animation only. `words_per_frame` and `max_gap_ms` control grouping |
+| static | `display_mode: "static"` | Words grouped into frames, entrance animation only. `chars_per_frame` and `max_gap_ms` control grouping |
 | karaoke (color) | `display_mode: "karaoke"` + `highlight: "color"` | ASS karaoke timing, active word uses `active_color`, completed words use `inactive_color` |
 | karaoke (underline) | `display_mode: "karaoke"` + `highlight: "underline"` | Per-word `\pos(x,y)` events, current word gets bigger font + underline via overlay at exact same position. No karaoke progress bar |
 | karaoke (both) | `display_mode: "karaoke"` + `highlight: "both"` | Underline + color shift combined |

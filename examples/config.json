@@ -1,5 +1,5 @@
 {
-  "words_per_frame": 3,
+  "chars_per_frame": 20,
   "display_mode": "static",
   "output_path": "output.json.mp4",
   "resolution": "1920x1080",

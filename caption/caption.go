@@ -20,7 +20,7 @@ func GroupWords(words []whisper.Word, cfg *config.Config) []Frame {
 		return nil
 	}
 
-	limit := cfg.WordsPerFrame
+	limit := cfg.CharsPerFrame
 	if limit < 1 {
 		limit = 1
 	}
@@ -29,24 +29,36 @@ func GroupWords(words []whisper.Word, cfg *config.Config) []Frame {
 
 	var frames []Frame
 	var group []whisper.Word
+	groupLen := 0 // rendered character length of the current group
 
 	for i := range words {
+		wordLen := wordRuneLen(words[i])
+
 		// split on timing gap if enabled and group is non-empty
 		if maxGap > 0 && len(group) > 0 {
 			gap := words[i].Start - group[len(group)-1].End
 			if gap > maxGap {
 				frames = append(frames, buildFrame(group, len(frames)))
 				group = nil
+				groupLen = 0
 			}
 		}
 
-		group = append(group, words[i])
-
-		// split on word count
-		if len(group) >= limit {
+		// split on character count: if adding this word would overflow the
+		// limit and we already have something, flush first. A single word
+		// longer than the limit still goes on its own line.
+		if len(group) > 0 && groupLen+1+wordLen > limit {
 			frames = append(frames, buildFrame(group, len(frames)))
 			group = nil
+			groupLen = 0
 		}
+
+		if len(group) > 0 {
+			groupLen += 1 + wordLen // +1 for the joining space
+		} else {
+			groupLen = wordLen
+		}
+		group = append(group, words[i])
 	}
 
 	if len(group) > 0 {
@@ -56,7 +68,13 @@ func GroupWords(words []whisper.Word, cfg *config.Config) []Frame {
 	return frames
 }
 
-func GroupWordsKaraoke(words []whisper.Word) []Frame {
+// wordRuneLen is the number of characters a word contributes to a line, after
+// the same trimming buildText applies.
+func wordRuneLen(w whisper.Word) int {
+	return len([]rune(strings.TrimSpace(w.Text)))
+}
+
+func GroupWordsKaraoke(words []whisper.Word, cfg *config.Config) []Frame {
 	if len(words) == 0 {
 		return nil
 	}
@@ -81,25 +99,40 @@ func GroupWordsKaraoke(words []whisper.Word) []Frame {
 		return nil
 	}
 
-	merged := mergeKaraokeFrames(frames, 3)
+	limit := cfg.CharsPerFrame
+	if limit < 1 {
+		limit = 1
+	}
+	merged := mergeKaraokeFrames(frames, limit)
 	return merged
 }
 
 func mergeKaraokeFrames(frames []Frame, limit int) []Frame {
 	if limit < 1 {
-		limit = 3
+		limit = 1
 	}
 
 	var result []Frame
 	var group []Frame
+	groupLen := 0 // rendered character length of the current group
 
 	for i := range frames {
-		group = append(group, frames[i])
+		wordLen := len([]rune(frames[i].Text))
 
-		if len(group) >= limit {
+		// flush before overflowing the character limit (single over-long
+		// words still go on their own line)
+		if len(group) > 0 && groupLen+1+wordLen > limit {
 			result = append(result, mergeFrameGroup(group, len(result)))
 			group = nil
+			groupLen = 0
 		}
+
+		if len(group) > 0 {
+			groupLen += 1 + wordLen
+		} else {
+			groupLen = wordLen
+		}
+		group = append(group, frames[i])
 	}
 
 	if len(group) > 0 {

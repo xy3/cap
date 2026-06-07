@@ -123,7 +123,7 @@ type KaraokeConfig struct {
 }
 
 type Config struct {
-	WordsPerFrame int              `yaml:"words_per_frame" json:"words_per_frame"`
+	CharsPerFrame int              `yaml:"chars_per_frame" json:"chars_per_frame"`
 	MaxGapMs      int              `yaml:"max_gap_ms" json:"max_gap_ms"`
 	DisplayMode   DisplayMode      `yaml:"display_mode" json:"display_mode"`
 	OutputPath    string           `yaml:"output_path" json:"output_path"`
@@ -140,7 +140,7 @@ type Config struct {
 
 func DefaultConfig() *Config {
 	return &Config{
-		WordsPerFrame: 4,
+		CharsPerFrame: 24,
 		MaxGapMs:      0,
 		DisplayMode:   DisplayStatic,
 		OutputPath:    "output.mp4",
@@ -220,8 +220,8 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 func (c *Config) Validate() error {
-	if c.WordsPerFrame < 1 {
-		return fmt.Errorf("words_per_frame must be at least 1")
+	if c.CharsPerFrame < 1 {
+		return fmt.Errorf("chars_per_frame must be at least 1")
 	}
 
 	validAnimations := map[AnimationType]bool{

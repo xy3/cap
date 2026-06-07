@@ -224,7 +224,7 @@ Capper auto-detects which whisper variant you are using based on the binary name
 ### Full configuration
 
 ```yaml
-words_per_frame: 4
+chars_per_frame: 24           # max characters per on-screen line
 display_mode: "static"        # "static" or "karaoke"
 output_path: "output.mp4"
 
@@ -290,7 +290,7 @@ karaoke:
 
 1. **Audio extraction** — FFmpeg extracts mono 16kHz WAV audio from the input video
 2. **Transcription** — Audio is sent to OpenAI Whisper API or processed by a local whisper binary to get word-level timestamps
-3. **Frame grouping** — Words are grouped into on-screen frames based on `words_per_frame`
+3. **Frame grouping** — Words are grouped into on-screen frames based on `chars_per_frame` (the per-line character budget)
 4. **ASS generation** — An Advanced SubStation Alpha subtitle file is generated with all styles, positions, and animation override tags
 5. **Rendering** — FFmpeg burns the ASS subtitles directly into the video stream, copying the original audio
 

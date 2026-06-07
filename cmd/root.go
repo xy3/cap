@@ -247,7 +247,7 @@ func BuildASS(words []whisper.Word, cfg *config.Config) string {
 				builder.AddPosWordEvents(f)
 			}
 		} else {
-			frames := caption.GroupWordsKaraoke(words)
+			frames := caption.GroupWordsKaraoke(words, cfg)
 			builder.AddKaraokeStyle()
 			for _, f := range frames {
 				builder.AddKaraokeEvent(f)

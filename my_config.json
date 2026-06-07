@@ -1,5 +1,5 @@
 {
-  "words_per_frame": 3,
+  "chars_per_frame": 20,
   "max_gap_ms": 300,
   "display_mode": "karaoke",
   "output_path": "output_local.mp4",

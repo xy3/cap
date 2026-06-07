@@ -1,8 +1,8 @@
 # Capper Configuration
 # Copy this file and customize to your needs.
 
-# Number of words to display on screen at once
-words_per_frame: 4
+# Maximum number of characters to display on one line at once
+chars_per_frame: 24
 
 # Display mode: "static" (all words at once) or "karaoke" (per-word highlight)
 display_mode: "static"
